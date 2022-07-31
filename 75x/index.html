@@ -1,0 +1,1878 @@
+<!DOCTYPE html>
+<html manifest="cache.manifest">
+<head>
+  <meta charset="UTF-8">
+  <title>Jailbreak</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* Grid layout */
+
+    #website {
+      display: grid;
+      grid-template-areas: 'top' 'middle' 'bottom';
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr auto;
+      height: 100vh;
+    }
+
+    #website > header {
+      align-items: center;
+      background-color: var(--background-color-1);
+      border-color: var(--border-color);
+      border-style: none none solid;
+      border-width: 1px;
+      display: none;
+      grid-area: top;
+      justify-content: space-between;
+    }
+
+    #website > main {
+      background-color: var(--background-color-2);
+      color: var(--text-color-2);
+      display: none;
+      grid-area: middle;
+      overflow: auto;
+      padding: 8px 8px 0;
+      position: relative;
+    }
+
+    #website > footer {
+      background-color: var(--background-color-1);
+      border-color: var(--border-color);
+      border-style: solid none none;
+      border-width: 1px;
+      display: none;
+      grid-area: bottom;
+      padding: 8px 0 0 8px;
+    }
+
+    /* Header */
+
+    #title {
+      color: var(--text-color-1);
+      font-size: x-large;
+      font-weight: bold;
+      padding: 8px;
+    }
+
+    #button_container {
+      align-items: stretch;
+      align-self: stretch;
+      display: flex;
+    }
+
+    #updateinfo {
+      align-self: center;
+      color: var(--text-color-1);
+      padding: 0 8px;
+    }
+
+    header button {
+      background-color: var(--background-color-1);
+      border: none;
+      color: var(--text-color-1);
+      font-size: large;
+      font-weight: bold;
+      margin: 0;
+      outline: none;
+      padding: 0 8px;
+    }
+
+    /* Tabs */
+
+    .tab {
+      background-color: var(--background-color-2);
+      border-color: var(--border-color);
+      border-style: none none solid solid;
+      border-width: 1px;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+      color: var(--text-color-2);
+      display: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .tab_content {
+      padding: 8px;
+    }
+
+    .tab_title {
+      align-items: baseline;
+      display: flex;
+      font-size: x-large;
+      font-weight: bold;
+      justify-content: space-between;
+      padding: 8px;
+    }
+
+    /* Settings tab */
+
+    .tab_option_group {
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      text-align: right;
+    }
+
+    .custom_payload_title {
+       width: 100px;
+    }
+
+    .custom_payload_payloads {
+       width: 500px;
+    }
+
+
+    /* Footer */
+
+    #payload_chain_area {
+      display: none;
+      font-size: medium;
+      margin: 0 8px 8px 0;
+    }
+
+    #payload_chain {
+      align-items: center;
+      background-color: var(--background-color-2);
+      border: 1px solid var(--border-color);
+      color: var(--text-color-2);
+      display: flex;
+      flex-grow: 1;
+      padding: 0 6px;
+    }
+
+    #payload_chain_buttons > :first-child {
+      margin: 0 4px 0 8px;
+    }
+
+    #payload_chain_buttons > * {
+      margin: 0 4px 0 0;
+    }
+
+    #payload_chain_buttons > :last-child {
+      margin: 0;
+    }
+
+    #payload_info {
+      color: var(--text-color-1);
+      display: none;
+      font-size: medium;
+      margin: 0 8px 8px 0;
+    }
+
+    .payload_link {
+      color: var(--text-color-1);
+      display: inline-block; /* Undesired side-effect: this adds 4px additional horizontal margin between items */
+      font-size: medium;
+      font-weight: bold;
+      margin: 0 12px 8px 0; /* margin-right: taking the 4px into account */
+      text-decoration: none;
+    }
+
+    .payload_link.show {
+      display: inline-block;
+    }
+
+    .payload_style_plain:hover {
+      text-decoration: underline;
+    }
+
+    .payload_style_button {
+      color: var(--text-color-1);
+      background-color: var(--background-color-1);
+      border: 1px solid var(--border-color);
+      margin-right: 4px;
+      padding: 2px 8px;
+    }
+
+    .payload_style_button:hover {
+      background-color: var(--highlight-color);
+      color: var(--text-color-1);
+     }
+
+    .payload_style_button:active {
+      box-shadow: inset 0 0 5px var(--text-color-1);
+    }
+
+    .payload_style_hybrid {
+      margin-left: -2px;
+      margin-right: 6px;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    .payload_style_hybrid:hover {
+      background-color: var(--highlight-color);
+    }
+
+    .credits {
+      color: var(--border-color);
+      font-size: small;
+      margin: 0 8px 8px 0;
+    }
+
+    #binloader_status {
+      background-color: var(--background-color-2);
+      border: 1px solid var(--border-color);
+      color: var(--text-color-2);
+      display: none;
+      padding-left: 4px;
+      padding-right: 4px;
+    }
+
+    /* Standard UI elements */
+
+    /* Reminder: Payloads are links and not buttons */
+    button {
+      background-color: var(--background-color-1);
+      border: 1px solid var(--border-color);
+      color: var(--text-color-1);
+      font-size: medium;
+      text-decoration: none;
+    }
+
+    button:hover {
+      background-color: var(--highlight-color);
+    }
+
+    button:active {
+      box-shadow: inset 0 0 5px var(--text-color-1);
+    }
+
+    input {
+      background-color: var(--background-color-2);
+      border: 1px solid var(--border-color);
+      color: var(--text-color-2);
+      font-size: medium;
+    }
+
+    input[type="checkbox"] {
+      text-decoration: none;
+      transform: scale(1.24);
+      transform-origin: right;
+    }
+
+    input[type="text"] {
+      padding: 2px 6px;
+    }
+
+    select {
+      background-color: var(--background-color-2);
+      border-color: var(--border-color);
+      color: var(--text-color-2);
+      font-size: medium;
+    }
+
+    .tab_option_group select {
+      width: 230px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 1em;
+    }
+
+    @font-face {
+      font-family: "monospace";
+      font-style: normal;
+      font-weight: 400;
+      src: url("courier_prime_v2_latin_regular.woff");
+    }
+
+    /* Hide firmware-specific elements */
+    .fw702, .fw75x {
+      display: none;
+    }
+  </style>
+  <style id="scrollbar"></style>
+  <script>
+    // Firmware safety check to prevent system lockups
+    var useragent = navigator.userAgent;
+    if (useragent.substring(13,26) === "PlayStation 4") {
+      var firmware = useragent.substring(27,31);
+    } else {
+      alert("You are not using a PS4 to view this website. Do not click on any payload links, as they might cause your system to freeze.\nThis website is only to be used with a PS4. Proceed at your own risk!");
+    }
+  </script>
+</head>
+<body>
+  <script src="changelog.js"></script>
+  <script>
+  // Remove 7.55 kernel exploit data when on 7.02
+  if (targetFirmware == "7.02") {
+    localStorage.removeItem("jailbreak_kernel_exploit");
+  }
+  </script>
+  <div id="website">
+    <header>
+      <span id="title">PS4 JAILBREAK</span>
+      <script>
+        // Show for which target firmware the website is made
+        document.title += " " + targetFirmware;
+        document.getElementById("title").innerHTML += " FOR FIRMWARE " + targetFirmware;
+        // Show current firmware if it differs
+        if (firmware !== undefined && firmware.substring(0,3) !== targetFirmware.substring(0,3)) {
+          document.getElementById("title").innerHTML += `<span style="color: var(--border-color)">  Current firmware:  ` + firmware;
+        }
+      </script>
+      <div id="button_container">
+        <div id="updateinfo"></div> <!-- Displays caching progress -->
+        <button onmousedown="showTab('tab_changelog', event)">Changelog</button>
+        <button id="button_jailbreakhistory" style="display: none" onmousedown="showTab('tab_jailbreakhistory', event); loadJailbreakHistory()">Jailbreak history</button>
+        <button onmousedown="showTab('tab_options', event)">Settings</button>
+        <script>
+          function hideTabs() {
+            let x;
+            // Hide all tabs
+            x = document.getElementsByClassName("tab");
+            for (let i = 0; i < x.length; i++) {
+              x[i].style.display = "none";
+            }
+            // Unpress all buttons
+            x = document.getElementsByTagName("button");
+            for (let i = 0; i < x.length; i++) {
+              x[i].style.boxShadow = "";
+              x[i].style.backgroundColor = "";
+            }
+          }
+
+          function showTab(id, event) {
+            let tab = document.getElementById(id);
+            if (tab.style.display == "block") {
+              // Hide tab if already open
+              tab.style.display = "none";
+              // Unpress button
+              event.target.style.boxShadow = "";
+              event.target.style.backgroundColor = "";
+            } else {
+              hideTabs();
+              // Show tab
+              tab.style.display = "block";
+              // Make button look pressed
+              event.target.style.boxShadow = "inset 0 0 5px var(--text-color-1)";
+              event.target.style.backgroundColor = "var(--highlight-color)";
+            }
+          }
+        </script>
+      </div>
+    </header>
+    <main>
+      <div id="instructions" style="overflow: hidden; width: 98vw">
+        <noscript><span style="color: red">JavaScript is required to run the jailbreak. Press the OPTIONS button, go to "Settings" and check "Enable JavaScript", then refresh the web page.</span></noscript>
+        <b style="font-size: large">Instructions</b>
+        <p>
+          This website is now cached in your PS4 browser. You can disconnect your PS4 from the Internet and, from now on, keep using the jailbreak offline. For easy access, feel free to add a bookmark.<br>
+          To jailbreak, click on the payload that you want to load. If all goes well, after 20-40 seconds you will see the message <i>"You're all set!"</i>, followed by <i>"There is not enough free system memory"</i>. Usually though, you will need multiple attempts. The jailbreak consists of two parts: WebKit exploit and kernel exploit.
+        </p>
+          <b>Several messages can appear:</b>
+          <ul>
+            <li><b>"There is not enough free system memory"</b>: It means the WebKit exploit was not successful. Press "OK" to try again. This is normal, as the chance to succeed is quite low.</li>
+            <li><b>"Jailbreak failed! Reboot your PS4 and try again"</b>: The kernel exploit has failed, and the system is not stable anymore. When you try to reboot, the system might crash, which looks like an instant power down. Press the PS4's power button twice to turn it on again. A disk check will run, and then you can resume jailbreaking.</li>
+            <li><b>"Failed to setup a relative read primitive"</b>: This can happen when you move your controller's analog sticks while the WebKit exploit is still trying to succeed. Do not move the analog sticks. After pressing "OK", you can resume jailbreaking.</li>
+            <li><b>"You're all set!"</b>: The jailbreak was successful, and the selected payload has been loaded into memory.</li>
+          </ul>
+          <b>Additional information:</b>
+          <ul>
+            <li>Loading a HEN/GoldHEN or Mira payload unlocks installed homebrew applications and enables "Debug Settings": Leave the browser and go to "Settings - *Debug Settings - Game - Package Installer" to install homebrew PKG files from the root folder of an exFAT-formatted USB storage device. <b>Do not ever go into "*Debug Settings - System - IDU Mode", or your PS4 will brick!</b></li>
+            <li>For GoldHEN's Rest Mode support to work, make sure to enable "Keep Application Suspended" in "Settings - Power Save Settings - See Features Available in Rest Mode".</li>
+            <li>You can send additional payload files from a computer: First, load the "Netcat" payload. Then, on your computer, use a Netcat program to send your payload files to the PS4.</li>
+            <li>Payloads loaded via WebKit exploit that run inside the browser, like FTP and Netcat, stay active until the window is closed. To leave the browser while keeping them alive, use the PS button.</li>
+            <li>GoldHEN 2.x's BinLoader server, found outside the browser in "Settings - *GoldHEN*", activates instant payload loading. This website feature only works if the website is self-hosted via HTTP. It will not be available when using HTTPS or hippie68.github.io. Please take care not to load the same payload twice while the payload is still running.</li>
+          <ul>
+      </div>
+      <div class="tab" id="tab_changelog">
+        <div class="tab_title">Changelog<span id="tab_changelog_version" style="font-size: medium; font-weight: normal"></span></div>
+        <div class="tab_content" id="changelog">
+          Please report any bugs by creating an issue on <a style="color: var(--text-color-2)" href="https://github.com/hippie68/hippie68.github.io/issues">GitHub</a> (external link).<br>
+          General information about the website: <a style="color: var(--text-color-2)" href="https://github.com/hippie68/hippie68.github.io#readme">README.md</a> (external link).<br><br>
+          <script>
+            // Shows the changelog, replacing newlines with "<br>"
+            document.getElementById("changelog").innerHTML += changes.replace(/\n/g, "<br>");
+            document.getElementById("tab_changelog_version").innerHTML = "Release " + date + "#" + build;
+          </script>
+        </div>
+      </div>
+      <div class="tab" id="tab_jailbreakhistory">
+        <div class="tab_title">Jailbreak history<span id="tab_jailbreakhistory_stats" style="font-size: medium; font-weight: normal; text-align: right"></span></div>
+        <div class="tab_content" id="historylog" style="font-family: 'monospace'"></div>
+      </div>
+      <div class="tab" id="tab_options"> <!-- Checkboxes have the same ID name as the key they store -->
+        <div class="tab_title">Settings</div>
+        <div class="tab_content" style="display: flex">
+          <div style="margin-right: 8px">
+            <!-- Wallpaper settings -->
+            <div style="font-size: large; font-weight: bold">Wallpaper</div>
+            <div class="tab_option_group">
+              <label for="enable_wallpaper">Enable wallpaper</label>
+              <input type="checkbox" id="enable_wallpaper" onclick="toggleEnableWallpaper()"><br>
+              <label for="select_wallpaper">Wallpaper:</label>
+              <select id="select_wallpaper" onchange="selectWallpaper(this.value)" style="width:auto">
+                <option value="cache" class="offline_cache" selected>Offline cache</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2QxMDYxMGJkZDY3MjcyOWNjZWQzNjhhYzg5NWRiMDQ4NmI4NmIwMTguanBnCg==">Assassin's Creed: Black Flag</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Q1MzgwNDJiMTM3MjY4NTQwZjE4MjQ5NzgyZmZiNmMxNWQwNGI0YjAuanBnCg==">Assassin's Creed: Valhalla #1</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Y0YzY1MDE2MzI5NTc4M2QyNThiZWRjMzU2MTBjMjUzOThiMTdkNWUuanBnCg==">Assassin's Creed: Valhalla #2</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzc5MTVhMjM2NDI3MjZhMDkxNmFmNDk0NTRlZjdkNmM4MmIzZWE4MmYuanBnCg==">Bloodborne #1</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzYzY2M1NDk3NDY1NzcwMzM0NmRmMjAzYTZmODk0ZjM1MmEwMmJhM2YuanBnCg==">Bloodborne #2</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzIyMDk0ZGIwNjBkYTQ5NmVhMTNkZGJkNGEyMzUwZmJjOWUyODY5ZjIuanBnCg==">Code Vein</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2I2NDhjODFlOTVkNmQzNjg2NTVhNDIwNGRhNDNkMjUzYjFjMWQyYjIuanBnCg==">Cyberpunk 2077 Girl #1</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2ZkNTgxMGM0NWFiYzg5YjBlZTFiNTEwYjI2OGRhZjZiYmUwNzViODEuanBnCg==">Cyberpunk 2077 Girl #2</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzkzZmQ0N2JlMTZhMjM4ODk2NjkzYjAwZmVhZGY0Y2ZkMzE3ZGQ2NjkuanBnCg==">Cyberpunk 2077 Main Cover</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzYwOWQ5ZDlkMTdkMWU2NGM0OTViM2U3ZTM1YjI4NTIzZmQ2Njk5ZDcuanBnCg==">Dark Souls #1</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzI5MDhjNDM4ZTdjNGE1NDM4ZDkyNWYxZWFiNmNlN2YyNjc1NGNkNGQuanBnCg==">Dark Souls #2</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2U4OTBmZWIxYzJjZjJmNmI0ZGFmY2RmMDg3OGZhYmM3Yzg2OTQ2ZjEuanBnCg==">Days Gone</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzA2N2Y4MWZhOWE0MzhhMjM3ZjhkNzg2NzczODVhYzVmNzhiZDkyOTYuanBnCg==">Detroit: Become Human</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzQwMGQ3MjFmMGJjMWUzYTcxYjIwNWI1YTgxZmQ4YjlkZGQ2NGY2ZmYuanBnCg==">Dying Light</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2NiMDBmMWNjMDQ0NDEwYzczYWYxNzdmMDdlZjdjZTAxN2E3MTQ3NWUuanBnCg==">Fallout: New Vegas</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzIzZjZiNzI3MTNhM2JlZjM0ZGE4Y2EzZDliMTcyNTlkMjgwMTJmYzUuanBnCg==">Ghost of Tsushima</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzMxOTEwOGY2MTYyNjViYWJlNzI0YjM2ZjgwZTJlYTI1NWY0Yjk0OGMuanBnCg==">God of War</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzQwNjZlZGExNzEyMmJjMDZiN2FkNTk0M2VkNWNkZDIwYjQ1MWU4MDkuanBnCg==">Grand Theft Auto</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzg5MWJmZGI3MjNlYTUxY2Y2Y2YwOGU1NDg1ZjMzYTU2NGJhYjU0NTMuanBnCg==">Metro Exodus</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzUxYTlkMDNjNTg5NDJjYTU4MGZkYWNmNDQwZWE0YjU1NTYwNTZhZjMuanBnCg==">Monster Hunter: World</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzA3NjdjOGY3ZTEzNzM0ZGNkZGU3NDFmNzM1NjIzMzZkMjRhOThjOGEuanBnCg==">Need for Speed</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2I2ZTJmMzZlYTEzNDk2NDMzOWM5ZTI2N2Q5MDliNzQ2NDMzZDcxZDYuanBnCg==">NieR: Automata</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2IxYWIwNzhmMzc1Zjk5MTgwY2RiMzg5MGM0ZDZiYjIzYTkwMThlMjEuanBnCg==">No Man's Sky</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2NjMDMyMDljYjEzMDQ0ZDJmNzk0NWRmYWQzZDY5N2Q0NjUxNTM5NmMuanBnCg==">Persona 5</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2EwMGExYWU4ZjFlMjQ1NTM5ZTY1YjQ2N2NkODZiNDk1MDQ4Y2M0YzguanBnCg==">Red Dead Redemption 2</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzM4Mjc3NTk2ZGVhOTFiOGU3YzQzZDU4YjM4YzYxZjc1NDYyZjc1YzUuanBnCg==">Sekiro: Shadows Die Twice</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Y2ZmZlODE5YTBlYTVkZjFhZDQwNDc4NGVjNDRjNzJjZGJhZmM0MjMuanBnCg==">Spider-Men</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzY5MWZhMWE3M2Y0NDE5ZGU3ZTRjNTBkNGI0ZmZhMTIwM2QyNTc3Y2QuanBnCg==">The Last of Us Ellie #1</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2E4NTdiZTY5MmMyNzdhYmFiMDE0NDBhYmQ3MTdkNmE0NjdiZWYxZTEuanBnCg==">The Last of Us Ellie #2</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzVkMzI3MGIwNWYxNDY0M2RkNmIyZTBkYTFkZDY0MDA3NDEwYjExNzcuanBnCg==">The Witcher 3 Geralt and Ciri</option>
+                <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2U3ZGE1NzQ4MmVmMDcyZjkzOTQyODAwOGUxZjdmZGMzYjRmYTAwM2EuanBnCg==">The Witcher 3 Triss Merrigold</option>
+              </select><br>
+              <button id="button_cache_wallpaper" onclick="cacheWallpaper()" style="display: block; width: 100%">Cache selected wallpaper</button>
+              <button id="wallpaper_cache" onclick="deleteWallpaperCache()" style="width: 100%">Delete offline cache</button> <!-- "Delete data" buttons have the same ID name as the key they delete -->
+            </div>
+            <div style="height: 16px"></div>
+            <!-- Jailbreak history settings -->
+            <div style="font-size: large; font-weight: bold">Jailbreak history</div>
+            <div class="tab_option_group">
+              <label for="disable_jailbreak_history">Hide jailbreak history</label>
+              <input type="checkbox" id="disable_jailbreak_history" onclick="toggleJailbreakHistory()"><br>
+              <label for="select_jailbreak_history_max">Number of lines to display:</label>
+              <select id="select_jailbreak_history_max" onchange="setJailbreakHistoryMax(this.value)" style="width: auto">
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+              </select><br>
+              <button id="jailbreak_history" onclick="clearJailbreakHistory()" style="width: 100%">Delete jailbreak history data</button>
+            </div>
+          </div>
+          <div>
+            <!-- Jailbreak settings -->
+            <div style="font-size: large; font-weight: bold">Jailbreak</div>
+            <div class="tab_option_group">
+              <label for="disable_youreallset">Disable the "You're all set!" message</label>
+              <input type="checkbox" id="disable_youreallset" onclick="toggleYoureAllSet()"><br>
+              <label for="select_log_level">Log level:</label>
+              <select id="select_log_level" onchange="setLogLevel(this.selectedIndex)">
+                <option value="0">0: Disable all logging</option>
+                <option value="1">1: Log during jailbreak</option>
+                <option value="2">2: Enable jailbreak history</option>
+              </select><br>
+              <label for="select_webkit_exploit">WebKit exploit:</label>
+              <select id="select_webkit_exploit" onchange="setWebkitExploit(this.value)">
+                <option value="regular">Original release</option>
+                <option value="hippie68">hippie68 speed mod</option>
+                <option value="sleirsgoevy">sleirsgoevy stability mod</option>
+                <option value="combined">Both mods combined</option>
+              </select><br>
+              <label for="select_webkit_address">Address:</label>
+              <select id="select_webkit_address" onchange="setWebkitAddress(this.value)">
+                <option value="regular">0x2031b00d8 "Original"</option>
+                <option value="0x20275e520">0x20275e520 "Median"</option>
+                <option value="0x20213b450">0x20213b450 "Peak"</option>
+                <option value="custom">Custom as set below</option>
+              </select><br>
+              <div style="display: none">
+                <input type="text" id="input_guess_addr" oninput="setCustomAddress(this.value)" style="width: 115px"><br class="fw75x">
+              </div>
+              <label class="fw75x" for="select_kernel_exploit">Kernel exploit:</label>
+              <select class="fw75x" id="select_kernel_exploit" onchange="setKernelExploit(this.value)">
+                <option value="regular">Original release</option>
+                <option value="2021-04-29">2021-04-29</option>
+                <option value="2021-05-03">2021-05-03</option>
+                <option value="2021-05-21">2021-05-21</option>
+                <option value="2021-05-27">2021-05-27</option>
+                <option value="2021-06-03">2021-06-03</option>
+                <option value="2021-07-21">Latest (2021-07-21)</option>
+              </select>
+            </div>
+            <div style="height: 16px"></div>
+            <!-- Miscellaneous settings -->
+            <div style="font-size: large; font-weight: bold">Miscellaneous</div>
+            <div class="tab_option_group" style="margin-bottom: 8px">
+              <label for="disable_payload_info">Hide payload descriptions</label>
+              <input type="checkbox" id="disable_payload_info" onclick="togglePayloadInfo()"><br>
+              <label for="select_payload_style">Payload style:</label>
+              <select id="select_payload_style" onchange="setPayloadStyle(this.selectedIndex)">
+                <option value="0">Text</option>
+                <option value="1">Text, centered</option>
+                <option value="2">Buttons</option>
+                <option value="3">Buttons, centered</option>
+                <option value="4">Hybrid</option>
+                <option value="5">Hybrid, centered</option>
+              </select><br>
+              <label for="select_goldhen">GoldHEN version:</label>
+              <select class="fw75x" id="select_goldhen_fw755" onchange="setGoldHenVersion(this.value)">
+                <option value="all">Show all</option>
+                <option value="1.0_fw751">1.0 (FW 7.51)</option>
+                <option value="1.0_fw755">1.0 (FW 7.55)</option>
+                <option value="1.1_fw750">1.1 (FW 7.50)</option>
+                <option value="1.1_fw751">1.1 (FW 7.51)</option>
+                <option value="1.1_fw755">1.1 (FW 7.55)</option>
+                <option value="2.0b2_fw750">2.0b2 (FW 7.50)</option>
+                <option value="2.0b2_fw751">2.0b2 (FW 7.51)</option>
+                <option value="2.0b2_fw755">2.0b2 (FW 7.55)</option>
+                <option value="2.1_fw750">2.1 (FW 7.50)</option>
+                <option value="2.1_fw751">2.1 (FW 7.51)</option>
+                <option value="2.1_fw755">2.1 (FW 7.55)</option>
+                <option value="2.1.1_fw750">2.1.1 (FW 7.50)</option>
+                <option value="2.1.1_fw751">2.1.1 (FW 7.51)</option>
+                <option value="2.1.1_fw755">2.1.1 (FW 7.55)</option>
+                <option value="2.1.2_fw750">2.1.2 (FW 7.50)</option>
+                <option value="2.1.2_fw751">2.1.2 (FW 7.51)</option>
+                <option value="2.1.2_fw755">2.1.2 (FW 7.55)</option>
+                <option value="2.2_fw750">2.2 (FW 7.50)</option>
+                <option value="2.2_fw751">2.2 (FW 7.51)</option>
+                <option value="2.2_fw755">2.2 (FW 7.55)</option>
+                <option value="2.2.1_fw750">2.2.1 (FW 7.50)</option>
+                <option value="2.2.1_fw751">2.2.1 (FW 7.51)</option>
+                <option value="2.2.1_fw755">2.2.1 (FW 7.55)</option>
+                <option value="2.2.2_fw750">2.2.2 (FW 7.50)</option>
+                <option value="2.2.2_fw751">2.2.2 (FW 7.51)</option>
+                <option value="2.2.2_fw755">2.2.2 (FW 7.55)</option>
+              </select><br class="fw75x">
+              <select class="fw702" id="select_goldhen_fw702" onchange="setGoldHenVersion(this.value)">
+                <option value="all">Show all</option>
+                <option value="1.0">1.0</option>
+                <option value="1.1">1.1</option>
+                <option value="2.0b2">2.0b2</option>
+                <option value="2.1">2.1</option>
+                <option value="2.1.1">2.1.1</option>
+                <option value="2.1.2">2.1.2</option>
+                <option value="2.2">2.2</option>
+                <option value="2.2.1">2.2.1</option>
+                <option value="2.2.2">2.2.2</option>
+              </select><br class="fw702">
+              <label for="select_gta5">GTA 5 version:</label>
+              <select id="select_gta5" onchange="setGTA5Version(this.value)">
+                <option value="all">Show all</option>
+                <option value="none">Show none</option>
+                <option value="v1.00">1.00</option>
+                <option value="v1.27">1.27</option>
+                <option value="v1.32">1.32</option>
+              </select><br>
+              <label for="select_color_scheme">Color scheme:</label>
+              <select id="select_color_scheme" onchange="setColorScheme(this.value)">
+                <option value="cappuccino">Cappuccino</option>
+                <option value="dark">Dark</option>
+                <option value="lavender">Lavender</option>
+                <option value="gray">Light</option>
+                <option value="usa">Old Glory</option>
+                <option value="pink">Pink</option>
+                <option value="midnightblue">Retro Blues</option>
+                <option value="rojigualda">Spain</option>
+                <option value="wheat">Wheat & Wood</option>
+                <option value="wildberry">Wildberry</option>
+              </select>
+            </div>
+            <button onclick="restoreDefaultSettings()" style="width: 100%">Restore default settings</button>
+          </div>
+        </div>
+      </div>
+      <!-- Custom payload options -->
+      <div class="tab" id="tab_custom_payloads" style="border-style: solid none none solid; bottom: 0; top: initial">
+        <!-- Custom payload chains -->
+        <div style="padding: 8px">
+          <div style="font-size: large; font-weight: bold">Custom payload chains</div>
+          <div class="tab_option_group" style="text-align: left">
+            <table>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Payloads*</th>
+                <th></th>
+              </tr>
+              <tr>
+                <td><input id="custom_1_enabled" onchange="saveCustomPayloadCheckbox(this.id)" type="checkbox"></td>
+                <td><input class="custom_payload_title" id="custom_1_title" onchange="saveCustomPayloadTitle(this.id)" value="Chain 1"></td>
+                <td><input class="custom_payload_payloads" id="custom_1_payloads"></td>
+                <td><button id="custom_1_save" onclick="saveCustomPayloadPayloads(this.id)">Save</button></td>
+              </tr>
+              <tr>
+                <td><input id="custom_2_enabled" onchange="saveCustomPayloadCheckbox(this.id)" type="checkbox"></td>
+                <td><input class="custom_payload_title" id="custom_2_title" onchange="saveCustomPayloadTitle(this.id)" value="Chain 2"></td>
+                <td><input class="custom_payload_payloads" id="custom_2_payloads"></td>
+                <td><button id="custom_2_save" onclick="saveCustomPayloadPayloads(this.id)">Save</button></td>
+              </tr>
+              <tr>
+                <td><input id="custom_3_enabled" onchange="saveCustomPayloadCheckbox(this.id)" type="checkbox"></td>
+                <td><input class="custom_payload_title" id="custom_3_title" onchange="saveCustomPayloadTitle(this.id)" value="Chain 3"></td>
+                <td><input class="custom_payload_payloads" id="custom_3_payloads"></td>
+                <td><button id="custom_3_save" onclick="saveCustomPayloadPayloads(this.id)">Save</button></td>
+              </tr>
+            </table>
+            <span>*To save a new payload list, select multiple payloads below and then press "Save".</span><br>
+            <button onclick="deleteCustomPayloads()">Delete all custom payload data</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div>
+        <div id="payload_chain_area">
+          <span id="payload_chain"></span>
+          <div id="payload_chain_buttons">
+            <button onclick="resetPayloadChain()">Reset</button>
+            <button onclick="togglePayloadChainOptions()">Advanced options...</button>
+            <button onclick="toggleChainRecording()">Cancel</button>
+            <button onclick="launchPayloadChain()">Launch</button>
+          </div>
+        </div>
+        <div id="payload_info">Select a payload:</div>
+        <div class="fw702 payloadlist" onmouseout="resetPayloadInfo()">
+          <a class="payload_link custom_1" href="" style="display: none"></a>
+          <a class="payload_link custom_2" href="" style="display: none"></a>
+          <a class="payload_link custom_3" href="" style="display: none"></a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=app2usb.bin.bz2')" onmouseover="showPayloadInfo('app2usb')">App2USB</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=backup.bin.bz2')" onmouseover="showPayloadInfo('backup')">Backup</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=disable_aslr.bin.bz2')" onmouseover="showPayloadInfo('disableaslr')">Disable ASLR</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=disable_updates.bin.bz2')" onmouseover="showPayloadInfo('disableupdates')">Disable Updates</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=dumper.bin.bz2')" onmouseover="showPayloadInfo('dumper')">Dumper</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=enable_updates.bin.bz2')" onmouseover="showPayloadInfo('enableupdates')">Enable Updates</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=fakeusb.bin.bz2')" onmouseover="showPayloadInfo('fakeusb')">FakeUSB</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=ftp.bin.bz2')" onmouseover="showPayloadInfo('ftp')">FTP (port 1337)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.0.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.0</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.1.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.1</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.0b2.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.0b2</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.1.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.1</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.2.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.2</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.1.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.1</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.2.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.2</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=hen_v2.1.3.bin.bz2')" onmouseover="showPayloadInfo('hen213')">HEN 2.1.3</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=hen_v2.1.3b.bin.bz2')" onmouseover="showPayloadInfo('hen213b')">HEN 2.1.3b</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_arabicguy_v1.00.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 ArabicGuy v1.00</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_arabicguy_v1.27.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 ArabicGuy v1.27</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_arabicguy_v1.32.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 ArabicGuy v1.32</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_lamance_v1.32.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Lamance v1.32</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_native_caller_v1.00.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Native Caller v1.00</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_native_caller_v1.27.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Native Caller v1.27</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_native_caller_v1.32.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Native Caller v1.32</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=history_blocker.bin.bz2')" onmouseover="showPayloadInfo('historyblocker')">History Blocker</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=linux_1gb.bin.bz2')" onmouseover="showPayloadInfo('linux1gb')">Linux (1 GB)</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=linux_3gb.bin.bz2')" onmouseover="showPayloadInfo('linux3gb')">Linux (3 GB)</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=mira.bin.bz2')" onmouseover="showPayloadInfo('mira')">Mira</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=netcat.js.bz2')" onmouseover="showPayloadInfo('netcat')">Netcat</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=orbis_toolbox.bin.bz2')" onmouseover="showPayloadInfo('orbistoolbox')">Orbis Toolbox</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=ps4debug.bin.bz2')" onmouseover="showPayloadInfo('ps4debug')">PS4Debug</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=restore.bin.bz2')" onmouseover="showPayloadInfo('restore')">Restore</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=todex.bin.bz2')" onmouseover="showPayloadInfo('todex')">ToDEX</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=webrte.bin.bz2')" onmouseover="showPayloadInfo('webrte')">WebRTE</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=web_activator.bin.bz2')" onmouseover="showPayloadInfo('webactivator')">Web Activator</a>
+          <a class="payload_link multi" href="javascript:toggleChainRecording()" onmouseover="showPayloadInfo('multiplepayloads')">Multiple payloads...</a>
+        </div>
+        <div class="fw75x payloadlist" onmouseout="resetPayloadInfo()">
+          <a class="payload_link custom_1" style="display: none"></a>
+          <a class="payload_link custom_2" style="display: none"></a>
+          <a class="payload_link custom_3" style="display: none"></a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=app2usb.bin.bz2')" onmouseover="showPayloadInfo('app2usb')">App2USB</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=backup.bin.bz2')" onmouseover="showPayloadInfo('backup')">Backup</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=disable_aslr.bin.bz2')" onmouseover="showPayloadInfo('disableaslr')">Disable ASLR</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=disable_updates.bin.bz2')" onmouseover="showPayloadInfo('disableupdates')">Disable Updates</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=dumper.bin.bz2')" onmouseover="showPayloadInfo('dumper')">Dumper</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=enable_updates.bin.bz2')" onmouseover="showPayloadInfo('enableupdates')">Enable Updates</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=fakeusb.bin.bz2')" onmouseover="showPayloadInfo('fakeusb')">FakeUSB</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=ftp.bin.bz2')" onmouseover="showPayloadInfo('ftp')">FTP (port 1337)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.0_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.0 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.0_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.0 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.1_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.1 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.1_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.1 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v1.1_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen')">GoldHEN 1.1 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.0b2_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.0b2 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.0b2_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.0b2 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.0b2_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.0b2 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.1_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.1 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.1_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.1 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.1_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.1 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.2_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.2 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.2_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.2 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.1.2_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.1.2 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.1_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.1 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.1_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.1 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.1_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.1 (FW 7.55)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.2_fw750.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.2 (FW 7.50)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.2_fw751.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.2 (FW 7.51)</a>
+          <a class="payload_link goldhen" href="javascript:selectPayload('payload.html#p0=goldhen_v2.2.2_fw755.bin.bz2')" onmouseover="showPayloadInfo('goldhen2')">GoldHEN 2.2.2 (FW 7.55)</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_arabicguy_v1.00.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 ArabicGuy v1.00</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_arabicguy_v1.27.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 ArabicGuy v1.27</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_arabicguy_v1.32.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 ArabicGuy v1.32</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_lamance_v1.32.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Lamance v1.32</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_native_caller_v1.00.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Native Caller v1.00</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_native_caller_v1.27.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Native Caller v1.27</a>
+          <a class="payload_link gta5" href="javascript:selectPayload('payload.html#p0=gta5_native_caller_v1.32.bin.bz2')" onmouseover="showPayloadInfo('gta5')">GTA 5 Native Caller v1.32</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=hen_v2.1.3b.bin.bz2')" onmouseover="showPayloadInfo('hen213b')">HEN 2.1.3b</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=history_blocker.bin.bz2')" onmouseover="showPayloadInfo('historyblocker')">History Blocker</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=linux_1gb.bin.bz2')" onmouseover="showPayloadInfo('linux1gb')">Linux (1 GB)</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=linux_3gb.bin.bz2')" onmouseover="showPayloadInfo('linux3gb')">Linux (3 GB)</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=mira.bin.bz2')" onmouseover="showPayloadInfo('mira')">Mira</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=netcat.js.bz2')" onmouseover="showPayloadInfo('netcat')">Netcat</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=orbis_toolbox.bin.bz2')" onmouseover="showPayloadInfo('orbistoolbox')">Orbis Toolbox</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=ps4debug.bin.bz2')" onmouseover="showPayloadInfo('ps4debug')">PS4Debug</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=restore.bin.bz2')" onmouseover="showPayloadInfo('restore')">Restore</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=todex.bin.bz2')" onmouseover="showPayloadInfo('todex')">ToDEX</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=webrte.bin.bz2')" onmouseover="showPayloadInfo('webrte')">WebRTE</a>
+          <a class="payload_link" href="javascript:selectPayload('payload.html#p0=web_activator.bin.bz2')" onmouseover="showPayloadInfo('webactivator')">Web Activator</a>
+          <a class="payload_link multi" href="javascript:toggleChainRecording()" onmouseover="showPayloadInfo('multiplepayloads')">Multiple payloads...</a>
+        </div>
+      </div>
+      <div class="fw702 credits">Credits: @sleirsgoevy for his 7.02 jailbreak, Linux payloads, and Web Activator, M A 7 for his ideas, Synacktiv team for the WebKit exploit, @theflow for the kernel exploit, &lt;anonymous&gt; for 7.02 module dumps, @ChendoChap for HEN 2.1.3, @karo_sharifi for HEN 2.1.3b and GTA 5 mods, SiSTRo for GoldHEN, OSM for Orbis Toolbox, Nazky for PS4Debug, @zecoxao for ToDEX, @tihmstar for 7.02 offsets in the Linux loader, @Al-Azif for Mira and her payload collection.</div>
+      <div class="fw75x credits">Credits: @sleirsgoevy for his 7.5x jailbreak, FakeUSB, Linux payloads, and Web Activator, M A 7 for his ideas, Synacktiv team for the WebKit exploit, @theflow for the kernel exploit, &lt;anonymous&gt; for 7.5x kernel dump, @karo_sharifi for HEN 2.1.3b and GTA 5 mods, SiSTRo for GoldHEN, OSM for Orbis Toolbox, @Joonie86 for PS4Debug, @zecoxao for ToDEX, @Al-Azif for Mira and her payload collection.</div>
+      <div style="display: flex; justify-content: center">
+        <span id="binloader_status"></span>
+      </div>
+    </footer>
+  </div>
+<script src="bzip2.js"></script>
+<script>
+function sortWallpapers() {
+  let list = document.querySelectorAll("#select_wallpaper option:not(.offline_cache)");
+  let array = Array.prototype.slice.call(list, 0);
+  array.sort((a, b) => a.innerHTML > b.innerHTML ? 1 : -1);
+  list = document.querySelector("#select_wallpaper");
+  for (let i = 0; i < array.length; i++) {
+    list.append(array[i]);
+  }
+}
+
+// Adds user-defined wallpapers from optional file custom.js for self-hosting
+function addWallpaper(fileName, title) {
+  let o = document.createElement("option");
+  o.value = fileName;
+  o.innerHTML = "*" + title;
+  document.querySelector("#select_wallpaper").append(o);
+  sortWallpapers();
+}
+
+function sortPayloads() {
+  let list = document.querySelectorAll(".fw" + targetFirmware.replace(".", "") + " > .payload_link:not(.multi)");
+  let array = Array.prototype.slice.call(list, 0);
+  array.sort((a, b) => a.innerHTML.toLowerCase() < b.innerHTML.toLowerCase() ? 1 : -1);
+  list = document.querySelector(".fw" + targetFirmware.replace(".", "") + ".payloadlist");
+  for (let i = 0; i < array.length; i++) {
+    list.prepend(array[i]);
+  }
+}
+
+// Adds user-defined payloads from optional file custom.js for self-hosting
+function addPayload(fileName, title, description) {
+  let a = document.createElement("a");
+  a.className = "payload_link";
+  a.href = "javascript:selectPayload('payload.html#p0=" + fileName + "')";
+  a.innerHTML = title;
+  a.onmouseover = function() { showPayloadInfo(description); };
+  document.querySelector(".payloadlist" + ".fw" + targetFirmware.replace(".", "")).append(a);
+  sortPayloads();
+}
+</script>
+<script src="custom.js"></script>
+<script>
+/* INITIALIZATION
+   -------------- */
+
+const payloadChainDefaultText = "No payloads selected.";
+var binLoaderOnline = false;
+var lastPayloadLaunch = 0;
+
+// Shows application cache updates
+function checkForUpdates() {
+  document.getElementById("updateinfo").innerHTML = sessionStorage.getItem("last_status");
+  sessionStorage.removeItem("last_status");
+  window.applicationCache.onprogress = function (a) {
+    let percentage = Math.round(a.loaded / a.total * 100);
+    document.getElementById("updateinfo").innerHTML = "New content found. Updating cache: " + percentage + "%";
+  }
+  window.applicationCache.oncached = window.applicationCache.onupdateready = function () {
+    sessionStorage.setItem("last_status", "The website has been updated.");
+    window.location.reload();
+  }
+}
+
+// Sets elements depending on existing localStorage data
+function initialize() {
+  // Show firmware-specific elements
+  {
+    let x = document.getElementsByClassName("fw" + targetFirmware.replace(".", ""));
+    for (let i = 0; i < x.length; i++) {
+      x[i].style.display = "initial";
+    }
+  }
+
+  // Select saved offline wallpaper
+  {
+    let val = localStorage.getItem("wallpaper");
+    if (val) {
+      document.getElementById("select_wallpaper").value = val;
+    }
+  }
+
+  // Layout
+  applyColorScheme();
+  applyOptionEnableWallpaper();
+  applyOptionHideJailbreakHistory();
+  applyOptionHidePayloadInfo();
+  applyPayloadStyle();
+  applyGoldHenVersion();
+  applyGTA5Version();
+
+  // Custom payloads
+  loadCustomPayload("custom_1");
+  loadCustomPayload("custom_2");
+  loadCustomPayload("custom_3");
+
+  // Settings tab, checkboxes
+  function initializeCheckbox(optionName) {
+    var checkbox = document.getElementById(optionName);
+    if (localStorage.getItem(optionName) == 1) {
+      checkbox.checked = true;
+    } else {
+      checkbox.checked = false;
+    }
+  }
+  initializeCheckbox("enable_wallpaper");
+  initializeCheckbox("disable_payload_info");
+  initializeCheckbox("disable_youreallset");
+  initializeCheckbox("disable_jailbreak_history");
+
+  // Settings tab, various elements
+  {
+    let index, val;
+    // Set log level dropdown menu
+    index = localStorage.getItem("jailbreak_log_level");
+    if (index === null) {
+      document.getElementById("select_log_level").selectedIndex = 2; // Default
+    } else {
+      document.getElementById("select_log_level").selectedIndex = index;
+    }
+    // Set WebKit exploit dropdown menu
+    val = localStorage.getItem("jailbreak_webkit_exploit");
+    if (val === null) {
+      document.getElementById("select_webkit_exploit").value = "hippie68"; // Default
+    } else {
+      document.getElementById("select_webkit_exploit").value = val;
+    }
+    // Set WebKit exploit address dropdown menu
+    val = localStorage.getItem("jailbreak_guess_addr");
+    switch (val) {
+      case null:
+        document.getElementById("select_webkit_address").value = "regular"; // Default
+        break;
+      case "0x20275e520":
+      case "0x20213b450":
+        document.getElementById("select_webkit_address").value = val;
+        break;
+      default:
+        document.getElementById("select_webkit_address").value = "custom";
+        document.getElementById("input_guess_addr").parentElement.style.display = "block";
+    }
+    // Set WebKit exploit custom address input text
+    val = localStorage.getItem("custom_guess_addr");
+    if (val === null) {
+      document.getElementById("input_guess_addr").value = "0x2031b00d8"; // Default
+    } else {
+      document.getElementById("input_guess_addr").value = val;
+    }
+    // Set Kernel exploit dropdown menu
+    val = localStorage.getItem("jailbreak_kernel_exploit");
+    if (val === null) {
+      document.getElementById("select_kernel_exploit").value = "regular"; // Default
+    } else {
+      document.getElementById("select_kernel_exploit").value = val;
+    }
+    // Set payload style dropdown menu
+    index = localStorage.getItem("payload_style");
+    if (index === null) {
+      document.getElementById("select_payload_style").selectedIndex = 0; // Default
+    } else {
+      document.getElementById("select_payload_style").selectedIndex = index;
+    }
+    // Set color scheme dropdown menu
+    val = localStorage.getItem("color_scheme");
+    if (val === null) {
+      document.getElementById("select_color_scheme").value = "gray"; // Default
+    } else {
+      document.getElementById("select_color_scheme").value = val;
+    }
+    // Set max lines to display in jailbreak history
+    val = localStorage.getItem("jailbreak_history_max");
+    if (val === null) {
+      document.getElementById("select_jailbreak_history_max").value = 10; // Default
+    } else {
+      document.getElementById("select_jailbreak_history_max").value = val;
+    }
+  }
+}
+
+/* OPTIONS/SETTINGS
+------------------- */
+
+// Payload info
+
+function showPayloadInfo(tag) {
+  let text;
+  switch (tag) {
+    case "app2usb":          text = "Can be used to install PKGs on an exFAT-formatted USB storage device. Temporarily you need enough space on the internal HDD."; break;
+    case "backup":           text = "Backups databases and all save games to a USB storage device. Can only be restored on the current internal HDD setup, as the files are encrypted."; break;
+    case "disableaslr":      text = "Temporarily disables the ASLR (Address Space Layout Randomization) until the next reboot, to make working with memory easier/repeatable. For developers."; break;
+    case "disableupdates":   text = "Creates dummy directories, which survive a reboot but not a crash, in /update on the internal HDD, preventing the PS4 from starting firmware updates. Note: HEN payloads do this automatically."; break;
+    case "dumper":           text = "Start a game, then load the Dumper payload to extract the game and its update to an exFAT-formatted USB storage device. Make sure not to have important data on it."; break;
+    case "enableupdates":    text = "Removes the directories created by the Disable Updates payload to enable firmware updates once again."; break;
+    case "fakeusb":          text = "If your USB drive is too small to install PKGs from, copy the PKGs via FTP to /user/home/fakeusb, plug in your USB drive, and start the FakeUSB payload. Then install PKGs as usual via Debug Settings."; break;
+    case "ftp":              text = "Starts an FTP server that listens on port 1337. On a computer, you can run an FTP client to access the PS4 file tree. Supports custom FTP commands DECRYPT, KILL, MTRW, MTPROC, and SHUTDOWN."; break;
+    case "goldhen":          text = "Enables homebrew and Debug Settings. Ignores firmware checks to run the latest backports, supports remote package install, starts an FTP server (port 2121), and supports Rest Mode."; break;
+    case "goldhen2":         text = "Enables homebrew and Debug Settings. Ignores firmware checks to run the latest backports, supports remote package install and Rest Mode. A new PS4 menu entry, \"Settings - *GoldHEN*\", will appear."; break;
+    case "hen213":           text = "Regular HEN. Enables homebrew and Debug Settings. Might not work with some of the latest backports."; break;
+    case "hen213b":          text = "Enables homebrew and Debug Settings. Spoofs the firmware version to 9.99 to run the latest backports."; break;
+    case "gta5":             text = "Enables a mod menu in GTA 5, which you can activate in-game by pressing D-pad right + Square. Only works with the stated game version."; break;
+    case "historyblocker":   text = "Normally, the PS4 browser automatically loads the last used page. This payload turns that feature off/on."; break;
+    case "linux1gb":         text = "Loads Linux from a prepared USB storage device. Leaves Linux with 7 GB of RAM, as 1 GB will be used for graphics."; break;
+    case "linux3gb":         text = "Loads Linux from a prepared USB storage device. Leaves Linux with 5 GB of RAM, as 3 GB will be used for graphics. Do not use the 3 GB payload during Linux installation."; break;
+    case "mira":             text = "Enables homebrew and Debug Settings. Might not work with some of the latest backports."; break;
+    case "netcat":           text = "Enables you to send an additional payload file from a computer. Can be selected multiple times when using \"Multiple payloads\"."; break;
+    case "orbistoolbox":     text = "Modifies the PS4 UI to help with launching and developing homebrew. A new PS4 menu entry, \"Settings - *Orbis Toolbox\", will appear. Requires HEN 2.1.3, GoldHEN, or Mira; might crash with HEN 2.1.3b."; break;
+    case "ps4debug":         text = "A debugger for the PS4. Required by some PC applications, e.g. Save Mounter and Offline Account Activator."; break;
+    case "restore":          text = "Restores a backup done earlier by the Backup payload."; break;
+    case "todex":            text = "Spoofs the Target ID to 0x82 (DEX) to identify as a PS4 TestKit. Useful if you want to use Debug Trophies. The spoof is not permanent."; break;
+    case "webrte":           text = "This payload from the third-party website \"ps4trainer.com\" is required by their trainer apps."; break;
+    case "webactivator":     text = "Provides a web page to offline-activate local PS4 user accounts. Warning: Only activate new accounts. Do not activate accounts that have savegames and trophies."; break;
+    case "multiplepayloads": text = "Enables chaining of multiple payloads to run them all in one go. Select multiple payloads to chain them, then press \"Launch\"."; break;
+    default:                 text = tag; // For custom and self-hosted payloads
+  }
+  document.getElementById("payload_info").textContent = text;
+}
+
+function resetPayloadInfo() {
+  document.getElementById("payload_info").textContent = "Select a payload:";
+}
+
+function applyOptionHidePayloadInfo() {
+  if (localStorage.getItem("disable_payload_info") != "1") {
+    document.getElementById("payload_info").style.display = "block";
+  } else {
+    document.getElementById("payload_info").style.display = "none";
+  }
+}
+
+function togglePayloadInfo() {
+  if (localStorage.getItem("disable_payload_info") != 1) {
+    localStorage.setItem("disable_payload_info", 1);
+  } else {
+    localStorage.removeItem("disable_payload_info");
+  }
+  applyOptionHidePayloadInfo();
+}
+
+// "You're all set"
+
+function toggleYoureAllSet() {
+  if (localStorage.getItem("disable_youreallset") != 1) {
+    localStorage.setItem("disable_youreallset", "1");
+  } else {
+    localStorage.removeItem("disable_youreallset");
+  }
+}
+
+// Wallpaper
+
+function cacheWallpaper(attempt = 0) {
+  var imageUrl = atob(document.getElementById("select_wallpaper").value);
+  if (imageUrl.startsWith("http")) { // Only cache online resources
+    let select = document.getElementById("select_wallpaper");
+    select.disabled = true;
+    let button = document.getElementById("button_cache_wallpaper");
+    button.disabled = true;
+    let oldInnerHTML = button.innerHTML;
+    if (attempt === 0) {
+      button.innerHTML = "Requesting data, please wait ...";
+    } else {
+      button.innerHTML = "Retrying (" + attempt + "), please wait ...";
+    }
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", atob(data[0]) + imageUrl);
+    xhr.responseType = "arraybuffer";
+    // "Nothing happens" error
+    xhr.onerror = function () {
+      attempt++;
+      if (attempt === 10) {
+        alert("Caching failed after " + attempt + " attempts! Please try again later.");
+      } else {
+        cacheWallpaper(attempt);
+      }
+    };
+    // Show download progress
+    xhr.onprogress = (event) => {
+      button.innerHTML = "Caching, please wait ... " + Math.round(event.loaded / xhr.getResponseHeader("Content-Length") * 100) + "%";
+    };
+    // Cache when downloaded
+    xhr.onload = function () {
+      if (xhr.status === 200) {
+        var blob = new Blob([xhr.response], {type: "image/jpeg"});
+        var fileReader = new FileReader();
+        fileReader.onload = function (event) {
+          var result = event.target.result;
+          try {
+            localStorage.setItem("wallpaper_cache", result);
+            let size = result.length / 1000000;
+            alert("Wallpaper cached!\nImage size in cache: " + size.toFixed(2) + " MB");
+            select.selectedIndex = 0;
+            applyOptionEnableWallpaper();
+            initializeButton("wallpaper_cache");
+          }
+          catch (error) {
+            alert("Caching failed: " + error + "\nImage size (if it had been cached): " + size.toFixed(2) + " MB");
+          }
+        };
+        fileReader.readAsDataURL(blob);
+      } else {
+        alert("Error! Server response: " + xhr.status);
+      }
+    };
+    // Re-enable the button when finished
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        select.disabled = false;
+        button.disabled = false;
+        button.innerHTML = oldInnerHTML;
+      }
+    };
+    xhr.setRequestHeader(atob(data[1]), atob(data[2]));
+    xhr.send();
+  } else {
+    return;
+  }
+}
+
+function toggleEnableWallpaper() {
+  if (localStorage.getItem("enable_wallpaper") != 1) {
+    localStorage.setItem("enable_wallpaper", "1");
+  } else {
+    localStorage.removeItem("enable_wallpaper");
+  }
+  applyOptionEnableWallpaper();
+}
+
+function applyOptionEnableWallpaper() {
+  if (localStorage.getItem("enable_wallpaper") == 1) {
+    enableWallpaperMode(document.getElementById("select_wallpaper").value);
+  } else {
+    disableWallpaperMode();
+  }
+}
+
+function selectWallpaper(val) {
+  if (!val.startsWith("aHR0")) {
+    localStorage.setItem("wallpaper", val);
+  }
+  applyOptionEnableWallpaper();
+}
+
+function deleteWallpaperCache() {
+  let x = confirm("Are you sure you want to delete your wallpaper offline cache?");
+  if (x == true) {
+    localStorage.removeItem("wallpaper_cache");
+
+    // Refresh wallpaper
+    document.getElementById("select_wallpaper").value = "cache";
+    applyOptionEnableWallpaper();
+
+    alert("Wallpaper offline cache has been deleted!");
+  }
+}
+
+// Log level
+
+function setLogLevel(index) {
+  if (index == 2) { // Default
+    localStorage.removeItem("jailbreak_log_level");
+  } else {
+    localStorage.setItem("jailbreak_log_level", index);
+  }
+}
+
+// WebKit exploit
+
+function setWebkitExploit(value) {
+  if (value == "hippie68") { // Default
+    localStorage.removeItem("jailbreak_webkit_exploit");
+  } else {
+    localStorage.setItem("jailbreak_webkit_exploit", value);
+  }
+}
+
+function setWebkitAddress(value) {
+  let el = document.getElementById("input_guess_addr");
+  if (value == "custom") {
+    setCustomAddress(el.value);
+    el.parentElement.style.display = "block";
+  } else {
+    el.parentElement.style.display = "none";
+    if (value == "regular") { // Default
+      localStorage.removeItem("jailbreak_guess_addr");
+    } else {
+      localStorage.setItem("jailbreak_guess_addr", value);
+    }
+  }
+}
+
+function setCustomAddress(value) {
+  if (value == "0x2031b00d8" || value == "") { // Default
+    localStorage.removeItem("custom_guess_addr");
+    localStorage.removeItem("jailbreak_guess_addr");
+    document.getElementById("input_guess_addr").value = "0x2031b00d8";
+  } else {
+    localStorage.setItem("custom_guess_addr", value);
+    localStorage.setItem("jailbreak_guess_addr", value);
+  }
+}
+
+// Kernel exploit
+
+function setKernelExploit(value) {
+  if (value == "regular") { // Default
+    localStorage.removeItem("jailbreak_kernel_exploit");
+  } else {
+    localStorage.setItem("jailbreak_kernel_exploit", value);
+  }
+}
+
+// Payload style
+
+function setPayloadStyle(index) {
+  if (index == 0) { // Default
+    localStorage.removeItem("payload_style");
+  } else {
+    localStorage.setItem("payload_style", index);
+  }
+  applyPayloadStyle();
+}
+
+function applyPayloadStyle() {
+  let payloads = document.getElementsByClassName("payload_link");
+  let payload_style = localStorage.getItem("payload_style");
+  switch (payload_style) {
+    case "1": // Plain text, centered
+      document.getElementsByTagName("footer")[0].style.textAlign = "center";
+      for (let i = 0; i < payloads.length; i++) {
+        payloads[i].classList.remove("payload_style_hybrid", "payload_style_button");
+        payloads[i].classList.add("payload_style_plain");
+      }
+      break;
+    case "2": // Buttons
+      document.getElementsByTagName("footer")[0].style.textAlign = "left";
+      for (let i = 0; i < payloads.length; i++) {
+        payloads[i].classList.remove("payload_style_hybrid", "payload_style_plain");
+        payloads[i].classList.add("payload_style_button");
+      }
+      break;
+    case "3": // Buttons, centered
+      document.getElementsByTagName("footer")[0].style.textAlign = "center";
+      for (let i = 0; i < payloads.length; i++) {
+        payloads[i].classList.remove("payload_style_hybrid", "payload_style_plain");
+        payloads[i].classList.add("payload_style_button");
+      }
+      break;
+    case "4": // Hybrid
+      document.getElementsByTagName("footer")[0].style.textAlign = "left";
+      for (let i = 0; i < payloads.length; i++) {
+        payloads[i].classList.remove("payload_style_button", "payload_style_plain");
+        payloads[i].classList.add("payload_style_hybrid");
+      }
+      break;
+    case "5": // Hybrid, centered
+      document.getElementsByTagName("footer")[0].style.textAlign = "center";
+      for (let i = 0; i < payloads.length; i++) {
+        payloads[i].classList.remove("payload_style_button", "payload_style_plain");
+        payloads[i].classList.add("payload_style_hybrid");
+      }
+      break;
+    default: // Plain text
+      document.getElementsByTagName("footer")[0].style.textAlign = "left";
+      for (let i = 0; i < payloads.length; i++) {
+        payloads[i].classList.remove("payload_style_button", "payload_style_hybrid");
+        payloads[i].classList.add("payload_style_plain");
+      }
+      break;
+  }
+}
+
+// GoldHEN
+
+function setGoldHenVersion(value) {
+  if (value == "all") { // Default
+    localStorage.removeItem("goldhen_version");
+  } else {
+    localStorage.setItem("goldhen_version", value);
+  }
+  applyGoldHenVersion();
+}
+
+function applyGoldHenVersion() {
+  let x;
+  let goldhen_version = localStorage.getItem("goldhen_version");
+  let a;
+  switch(targetFirmware) {
+    case "7.02":
+      x = document.getElementById("select_goldhen_fw702");
+      a = document.querySelectorAll(".fw702 > .payload_link.goldhen");
+      break;
+    case "7.5x":
+      x = document.getElementById("select_goldhen_fw755");
+      a = document.querySelectorAll(".fw75x > .payload_link.goldhen");
+      break;
+    default:
+      return; // TODO: add future jailbreak versions here
+  }
+  if (goldhen_version === null) {
+    x.value = "all"; // Default
+    // Show all versions
+    for (let i = 0; i < a.length; i++) {
+      a[i].style.display = "inline-block";
+    }
+  } else {
+    x.value = goldhen_version;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i].href.includes(goldhen_version)) {
+        // Only show the selected version
+        a[i].style.display = "inline-block";
+      } else {
+        // Hide all other versions
+        a[i].style.display = "none";
+      }
+    }
+  }
+}
+
+// GTA 5 Mods
+
+function setGTA5Version(value) {
+  if (value == "all") { // Default
+    localStorage.removeItem("gta5_version");
+  } else {
+    localStorage.setItem("gta5_version", value);
+  }
+  applyGTA5Version();
+}
+
+function applyGTA5Version() {
+  let x = document.getElementById("select_gta5");
+  let gta5_version = localStorage.getItem("gta5_version");
+  let a = document.querySelectorAll(".payload_link.gta5");
+  if (gta5_version === null) {
+    x.value = "all"; // Default
+    // Show all versions
+    for (let i = 0; i < a.length; i++) {
+      a[i].style.display = "inline-block";
+    }
+  } else {
+    x.value = gta5_version;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i].href.includes(gta5_version)) {
+        // Only show the selected version
+        a[i].style.display = "inline-block";
+      } else {
+        // Hide all other versions
+        a[i].style.display = "none";
+      }
+    }
+  }
+}
+
+// Color scheme
+
+function setColorScheme(value) {
+  if (value == "gray") { // Default
+    localStorage.removeItem("color_scheme");
+  } else {
+    localStorage.setItem("color_scheme", value);
+  }
+  applyColorScheme();
+}
+
+function applyColorScheme() {
+  function setColors(background1, background2, highlight, border, text1, text2 = text1) {
+    let x = document.documentElement;
+    x.style.setProperty("--background-color-1", background1);
+    x.style.setProperty("--background-color-2", background2);
+    x.style.setProperty("--highlight-color", highlight);
+    x.style.setProperty("--border-color", border);
+    x.style.setProperty("--text-color-1", text1);
+    x.style.setProperty("--text-color-2", text2);
+    // Scrollbar
+    x = document.getElementById("scrollbar");
+    scrollbar.innerHTML = "::-webkit-scrollbar-thumb{background-color:" + highlight + ";border:1px solid " + border + "}::-webkit-scrollbar-track{background-color:" + background1 + ";border: 1px solid " + border + ";border-style: none none none solid}";
+    // Bodypainting done
+    document.getElementsByTagName("header")[0].style.display = "flex";
+    document.getElementsByTagName("main")[0].style.display = "initial";
+    document.getElementsByTagName("footer")[0].style.display = "initial";
+  }
+
+  let value = localStorage.getItem("color_scheme");
+  switch (value) {
+    // setColors(background1, background2, highlight, border, text1 [, text2])
+    case "cappuccino":
+      setColors("#3A2E2E", "#D6B79F", "sienna", "#816C61", "#F7ECDF", "#4B3832");
+      break;
+    case "dark":
+      setColors("#333333", "#666666", "#444444", "#AAAAAA", "#DDDDDD");
+      break;
+    case "lavender":
+      setColors("lavender", "#F5F5FA", "thistle", "darkorchid", "indigo");
+      break;
+    case "midnightblue":
+      setColors("midnightblue", "royalblue", "tomato", "#A9BBF1", "white");
+      break;
+    case "pink":
+      setColors("#934A70", "#BC7B9C", "#763C59", "#D8B2C5", "#F5ECF1");
+      break;
+    case "rojigualda":
+      setColors("#AA151B", "#F1BF00", "#800F14", "#D7810A", "#F1BF00", "#AA151B");
+      break;
+    case "usa":
+      setColors("#9B1C2C", "#33335F", "#33335F", "#CCC8BF", "#E3DED4");
+      break;
+    case "wheat":
+      setColors("wheat", "#FFFBF2", "burlywood", "saddlebrown", "maroon");
+      break;
+    case "wildberry":
+      setColors("#550000", "#AA3939", "#801515", "#E6C7C7", "#FFDDDD");
+      break;
+    default: // "gray"
+      setColors("#F0F0F0", "white", "#D7D7D7", "gray", "black");
+  }
+}
+
+// Custom payload chains (Settings)
+
+function togglePayloadChainOptions() {
+  showTab("tab_custom_payloads", event);
+}
+
+function saveCustomPayloadCheckbox(id) {
+  id = id.substr(0, 8);
+  if (document.getElementById(id + "_enabled").checked === true) {
+    localStorage.setItem(id + "_enabled", "1");
+  } else {
+    localStorage.removeItem(id + "_enabled");
+  }
+  loadCustomPayload(id);
+}
+
+function saveCustomPayloadTitle(id) {
+  id = id.substr(0, 8);
+  let title = document.getElementById(id + "_title").value;
+  if (title !== "") {
+    localStorage.setItem(id + "_title", title);
+  } else {
+    localStorage.removeItem(id + "_title", title);
+  }
+  loadCustomPayload(id);
+}
+
+function saveCustomPayloadPayloads(id) {
+  id = id.substr(0, 8);
+  let payload_chain = document.getElementById("payload_chain");
+  if (payload_chain.innerHTML != payloadChainDefaultText) {
+    let payloads = payload_chain.innerHTML.split(/[, ]+/);
+    localStorage.setItem(id + "_payloads", JSON.stringify(payloads));
+  }
+  loadCustomPayload(id);
+}
+
+function loadCustomPayload(id) {
+  let customPayloadLink = document.querySelector(".fw" + targetFirmware.replace(".", "") + " > .payload_link" + "." + id);
+  // Title
+  let title = localStorage.getItem(id + "_title");
+  if (title !== null) {
+    document.getElementById(id + "_title").value = title;
+    // Link title
+    customPayloadLink.innerHTML = "*" + title;
+  } else {
+    title = "Chain " + id.slice(7);
+    customPayloadLink.innerHTML = "*" + title;
+    document.getElementById(id + "_title").value = title;
+  }
+  // Payloads
+  let payloads = JSON.parse(localStorage.getItem(id + "_payloads"));
+  if (payloads !== null) {
+    document.getElementById(id + "_payloads").value = payloads;
+    // Link href
+    let payloadLink = "javascript:selectPayload('payload.html";
+    for (let i = 0; i < payloads.length; i++) {
+      payloadLink += (i == 0 ? "#" : "&") + "p" + i + "=" + payloads[i];
+    }
+    payloadLink += "')"
+    customPayloadLink.href = payloadLink;
+    // Link mouseover
+    customPayloadLink.onmouseover = function () {
+      showPayloadInfo("Loads " + payloads.join(", ") + ".");
+    };
+  } else {
+    document.getElementById(id + "_payloads").value = null;
+    // Link href
+    customPayloadLink.href = "";
+    // Link mouseover
+    customPayloadLink.onmouseover = "";
+  }
+  // Checkbox
+  let checkbox = document.getElementById(id + "_enabled");
+  checkbox.checked = (localStorage.getItem(id + "_enabled") !== null);
+  // Show/hide link
+  if (checkbox.checked) {
+    customPayloadLink.style.display = "inline-block";
+  } else {
+    customPayloadLink.style.display = "none";
+  }
+  sortPayloads();
+}
+
+function deleteCustomPayloads() {
+  let customPayloadLink;
+  for (let i = 1; i < 4; i++) {
+    localStorage.removeItem("custom_" + i + "_title");
+    localStorage.removeItem("custom_" + i + "_payloads");
+    localStorage.removeItem("custom_" + i + "_enabled");
+    let customPayloadLink = document.querySelector(".fw" + targetFirmware.replace(".", "") + " > .payload_link" + "." + "custom_" + i);
+    customPayloadLink.href = "";
+    customPayloadLink.onmouseover = "";
+    loadCustomPayload("custom_" + i);
+  }
+}
+
+// Payload chains
+
+function resetPayloadChain() {
+  document.getElementById("payload_chain").innerHTML = payloadChainDefaultText;
+}
+
+var isRecording = false; // Global
+function toggleChainRecording() {
+  isRecording = !isRecording;
+  let payload_chain_area = document.getElementById("payload_chain_area");
+  let payload_chain = document.getElementById("payload_chain");
+  if (isRecording === true) {
+    payload_chain_area.style.display = "flex";
+  } else {
+    hideTabs();
+    payload_chain_area.style.display = "none";
+  }
+  resetPayloadChain();
+}
+
+function launchPayloads(payloadLink) {
+  // Catch accidental double clicks
+  let currentDate = Date.now();
+  if (currentDate - lastPayloadLaunch < 500) {
+    return;
+  } else {
+    lastPayloadLaunch = currentDate;
+  }
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:9090/status");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        // Load payloads via BinLoader server
+        let payloads = payloadLink.split("#")[1].split("&");
+        for (let i = 0; i < payloads.length; i++) {
+          // Handle certain payloads differently
+          let payload = payloads[i].split("=")[1];
+          switch (payload) {
+            case "netcat.js.bz2":
+              payload = "netcat.bin.bz2";
+              break;
+            case "dumper.bin.bz2":
+            case "history_blocker.bin.bz2":
+            case "web_activator.bin.bz2":
+              if (confirm("\"" + payload + "\" must be loaded via WebKit exploit. Proceed?")) {
+                location.href = `payload.html#p0=${payload}&skip_kex`;
+                return;
+              }
+              return;
+          }
+          // Send current payload to BinLoader server
+          (function(payload) {
+            let xhr = new XMLHttpRequest();
+            xhr.responseType = "arraybuffer";
+            xhr.open("GET", payload);
+            xhr.onload = function() {
+              let array = new Uint8Array(this.response);
+              // Decompress
+              if (payload.endsWith(".bz2")) {
+                try {
+                  array = bzip2.simple(bzip2.array(array));
+                } catch (error) {
+                  alert(payload + ": \"" + error + "\"\nPlease report this critical bug at https://github.com/hippie68/hippie68.github.io/issues.");
+                  throw error;
+                }
+              }
+              // Convert .js to .bin
+              if (payload.endsWith(".js") || payload.endsWith(".js.bz2")) {
+                let pos1 = array.indexOf("[".charCodeAt(0));
+                let pos2 = array.indexOf("]".charCodeAt(0));
+                let code = array.slice(pos1 + 1, pos2);
+                let decoder = new TextDecoder();
+                let str = decoder.decode(code);
+                let strarray = str.split(",");
+                array = strarray.map(Number);
+                array = Uint8Array.from(array);
+              }
+              // Send
+              xhr = new XMLHttpRequest();
+              xhr.open("POST", "http://localhost:9090");
+              xhr.send(array.buffer);
+              checkBinLoader();
+            };
+            xhr.send();
+          })(payload);
+        }
+      } else {
+        if (binLoaderOnline) {
+          if (!confirm("It seems BinLoader server is not online anymore. Press \"OK\" to load the payload(s) via WebKit exploit, \"Cancel\" to abort.")) {
+            checkBinLoader();
+            return;
+          }
+        }
+        // Load payloads via WebKit exploit
+        location.href = payloadLink;
+      }
+    }
+  };
+  xhr.send();
+}
+
+function launchPayloadChain() {
+  let payload_chain = document.getElementById("payload_chain");
+  if (payload_chain.innerHTML != payloadChainDefaultText) {
+    let payloads = payload_chain.innerHTML.split(/[, ]+/);
+    let payloadLink = "payload.html";
+    for (let i = 0; i < payloads.length; i++) {
+      payloadLink += (i == 0 ? "#" : "&") + "p" + i + "=" + payloads[i];
+    }
+    toggleChainRecording();
+    launchPayloads(payloadLink);
+  }
+}
+
+function selectPayload(payloadLink) {
+  if (isRecording === true) {
+    let payload_chain = document.getElementById("payload_chain");
+    let existingPayloads = payload_chain.innerHTML.split(/[, ]+/);
+    let newPayloads = payloadLink.substring(payloadLink.indexOf("#") + 1).split("&");
+    // Add new payloads to the list, one by one
+    for (let i = 0; i < newPayloads.length; i++) {
+      let temp = newPayloads[i].split("=");
+      temp.shift();
+      newPayloads[i] = temp.join();
+      if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "netcat.js.bz2") { // No duplicates except for Netcat
+        if (payload_chain.innerHTML == payloadChainDefaultText) {
+          payload_chain.innerHTML = newPayloads[i];
+        } else {
+          payload_chain.innerHTML += ", " + newPayloads[i];
+        }
+      }
+    }
+  } else {
+    launchPayloads(payloadLink);
+  }
+}
+
+function setBinLoaderStatus(is_online, response) {
+  let el = document.getElementById("binloader_status");
+  if (is_online) {
+    let message = "BinLoader server status: " + response.status.toUpperCase();
+    el.style.display = "inline";
+    switch (response.status) {
+      case "ready":
+        message += " – payloads will load instantly";
+        break;
+    }
+    el.innerHTML = message;
+    binLoaderOnline = true;
+  } else {
+    el.style.display = "none";
+    binLoaderOnline = false;
+  }
+}
+
+function checkBinLoader() {
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "http://localhost:9090/status");
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == 4) {
+      if (xhr.status == 200) {
+        setBinLoaderStatus(true, JSON.parse(xhr.responseText));
+      } else {
+        setBinLoaderStatus(false);
+      }
+    }
+  }
+  xhr.send();
+}
+
+// Jailbreak history
+
+function setJailbreakHistoryMax(val) {
+  if (val == 10) { // Default
+    localStorage.removeItem("jailbreak_history_max");
+  } else {
+    localStorage.setItem("jailbreak_history_max", val);
+  }
+}
+
+function clearJailbreakHistory() {
+  let x = confirm("Are you sure you want to delete your jailbreak history data?");
+  if (x == true) {
+    localStorage.removeItem("jailbreak_history");
+    alert("Jailbreak history data has been deleted.");
+    document.getElementById("tab_jailbreakhistory_stats").innerHTML = "";
+  }
+}
+
+function applyOptionHideJailbreakHistory() {
+  if (localStorage.getItem("disable_jailbreak_history") != 1) {
+    document.getElementById("button_jailbreakhistory").style.display = "inline";
+  } else {
+    document.getElementById("button_jailbreakhistory").style.display = "none";
+  }
+}
+
+function toggleJailbreakHistory() {
+  if (localStorage.getItem("disable_jailbreak_history") != 1) {
+    localStorage.setItem("disable_jailbreak_history", "1");
+  } else {
+    localStorage.removeItem("disable_jailbreak_history");
+  }
+  applyOptionHideJailbreakHistory();
+}
+
+// Deletes all saved localStorage items and restores websites' default settings
+function restoreDefaultSettings() {
+  // Not deleting jailbreak history nor wallpaper cache nor custom payload chains, as they have separate delete buttons
+  let jailbreak_history = localStorage.getItem("jailbreak_history");
+  let jailbreak_kex_skipped = localStorage.getItem("jailbreak_kex_skipped");
+  let wallpaper_cache = localStorage.getItem("wallpaper_cache");
+  let custom_title = [], custom_payloads = []; custom_enabled = [];
+  for (let i = 1; i < 4; i++) {
+    custom_title[i] = localStorage.getItem("custom_" + i + "_title");
+    custom_payloads[i] = localStorage.getItem("custom_" + i + "_payloads");
+    custom_enabled[i] = localStorage.getItem("custom_" + i + "_enabled");
+  }
+  localStorage.clear();
+  localStorage.setItem("jailbreak_history", jailbreak_history);
+  localStorage.setItem("jailbreak_kex_skipped", jailbreak_kex_skipped);
+  localStorage.setItem("wallpaper_cache", wallpaper_cache);
+  for (let i = 1; i < 4; i++) {
+    if (custom_title[i] !== null) { localStorage.setItem("custom_" + i + "_title", custom_title[i]); }
+    if (custom_payloads[i] !== null) { localStorage.setItem("custom_" + i + "_payloads", custom_payloads[i]); }
+    if (custom_enabled[i] !== null)  { localStorage.setItem("custom_" + i + "_enabled", custom_enabled[i]); }
+  }
+
+  initialize();
+}
+
+/* JAILBREAK HISTORY
+-------------------- */
+
+// Puts zeroes in front of numbers
+const zerofy = (number) => String(number).padStart(2, "0");
+
+// Clean up and, if jailbreak history enabled, log the last jailbreak
+function evaluateLastJailbreak() {
+  let jailbreak_start_date = localStorage.getItem("jailbreak_start_date");
+  if (jailbreak_start_date !== null) {
+    let logLevel = localStorage.getItem("jailbreak_log_level");
+    if (logLevel === null) { // Means "level 2"
+      let jailbreak_last_date = localStorage.getItem("jailbreak_last_date");
+      let elapsedTime = (jailbreak_last_date - jailbreak_start_date);
+      let hours = Math.floor(elapsedTime / 1000 / 60 / 60);
+      let minutes = Math.floor(elapsedTime / 1000 / 60 - hours * 60);
+      let seconds = Math.floor(elapsedTime / 1000 - minutes * 60);
+      let jailbreak_attempts = localStorage.getItem("jailbreak_attempts");
+      let jailbreak_history = JSON.parse(localStorage.getItem("jailbreak_history"));
+      if (jailbreak_history === null) { jailbreak_history = []; }
+      let jailbreak_payload = localStorage.getItem("jailbreak_payload");
+      if (jailbreak_payload === null) { jailbreak_payload = "Netcat"; }
+      let jailbreak_stage = localStorage.getItem("jailbreak_stage");
+      let reason;
+      switch (jailbreak_stage) {
+        case "0":
+          reason = "WebKit exploit failed";
+          break;
+        case "1":
+          reason = "Kernel exploit failed";
+          break;
+        case "2":
+          reason = "Exploits successful, no feedback from payload";
+          break;
+        case "3":
+          reason = "Exploits successful*, no feedback from payload";
+          break;
+        case "4":
+          reason = "Jailbreak successful";
+          break;
+        case "5":
+          reason = "Jailbreak successful*";
+          break;
+        default:
+          reason = "Session interrupted";
+      }
+      let logDate = new Date(parseInt(jailbreak_last_date));
+      let historyNewEntry = "[" + logDate.getFullYear() + "-" + zerofy(logDate.getMonth() + 1) + "-" + zerofy(logDate.getDate()) + " " + zerofy(logDate.getHours()) + ":" + zerofy(logDate.getMinutes()) + "] " + reason + "; payload" + (jailbreak_payload.includes(",") ? "s: " : ": ") + jailbreak_payload + "; attempts: " + jailbreak_attempts + "; time: " + zerofy(hours) + ":" + zerofy(minutes) + ":" + zerofy(seconds);
+      jailbreak_history.unshift(historyNewEntry);
+      localStorage.setItem("jailbreak_history", JSON.stringify(jailbreak_history));
+    }
+    localStorage.removeItem("jailbreak_start_date");
+    localStorage.removeItem("jailbreak_last_date");
+    localStorage.removeItem("jailbreak_attempts");
+    localStorage.removeItem("jailbreak_payload");
+    localStorage.removeItem("jailbreak_stage");
+  }
+}
+
+// Loads recorded history of previous jailbreak attempts, writing it into the history tab
+function loadJailbreakHistory() {
+  var jailbreak_history = JSON.parse(localStorage.getItem("jailbreak_history"));
+  if (jailbreak_history === null) {
+    jailbreak_history = ["No jailbreaks recorded yet."];
+  // Calculate and output statistics
+  } else {
+    var webKitAttempts = 0, webKitSuccessCount = 0, kernelAttempts = 0, kernelSuccessCount = 0, successAttempts = 0, successCount = 0, successTime = 0, attempts, time, hours, minutes, seconds;
+    var jailbreak_stages = JSON.parse(localStorage.getItem("jailbreak_stages"));
+    if (jailbreak_stages === null) { jailbreak_stages = []; }
+    for (var i = 0; i < jailbreak_history.length; i++) {
+      if (jailbreak_history[i].includes("successful")) {
+        attempts = jailbreak_history[i].match(/ttempts: .*[;,]/);
+        attempts = parseInt(attempts[0].match(/ [^;,]+/));
+        webKitAttempts += attempts;
+        webKitSuccessCount++;
+        successAttempts += attempts;
+        successCount++;
+
+        // Don't calculate skipped kernel exploits
+        if (!jailbreak_history[i].includes("*")) {
+          kernelSuccessCount++;
+          kernelAttempts++;
+        }
+
+        time = jailbreak_history[i].match(/..:..:../);
+        time = time[0];
+        hours = parseInt(time.substr(0, 2));
+        minutes = parseInt(time.substr(3, 2));
+        seconds = parseInt(time.substr(6, 2));
+        successTime += hours * 60 * 60 + minutes * 60 + seconds;
+      } else if (jailbreak_history[i].includes("WebKit exploit failed")) {
+        attempts = jailbreak_history[i].match(/ttempts: .*[;,]/);
+        attempts = parseInt(attempts[0].match(/ [^;,]+/));
+        webKitAttempts += attempts;
+      } else if (jailbreak_history[i].includes("Kernel exploit failed")) {
+        attempts = jailbreak_history[i].match(/ttempts: .*[;,]/);
+        attempts = parseInt(attempts[0].match(/ [^;,]+/));
+        webKitAttempts += attempts;
+        webKitSuccessCount++;
+        kernelAttempts++;
+      }
+    }
+    if (successCount > 0 && kernelAttempts > 0) {
+      let averageAttempts = successAttempts / successCount;
+      let averageTime = successTime / successCount;
+      let webKitSuccessRate = (webKitSuccessCount / webKitAttempts * 100).toFixed(2);
+      let kernelSuccessRate = (kernelSuccessCount / kernelAttempts * 100).toFixed(2);
+      hours = zerofy(Math.floor(averageTime / 60 / 60));
+      minutes = zerofy(Math.floor(averageTime / 60 - hours * 60));
+      seconds = zerofy(Math.floor(averageTime - minutes * 60));
+      averageTime = hours + ":" + minutes + ":" + seconds;
+      document.getElementById("tab_jailbreakhistory_stats").innerHTML = "Average attempts: " + averageAttempts.toFixed(2) + ", average time: " + averageTime + "<br>WebKit exploit success rate: " + webKitSuccessRate + "%, kernel exploit success rate: " + kernelSuccessRate + "%";
+    }
+  }
+
+  // Print the jailbreak history
+  var max = localStorage.getItem("jailbreak_history_max"); // Apply max lines to show
+  if (max === null) {
+    if (jailbreak_history.length > 10) jailbreak_history.length = 10;
+  } else {
+    if (jailbreak_history.length > max) jailbreak_history.length = max;
+  }
+  let jailbreak_history_output = jailbreak_history.join("<br>"); // Adding linebreaks
+  document.getElementById("historylog").innerHTML = jailbreak_history_output;
+  if (jailbreak_history_output.includes("*")) {
+    document.getElementById("historylog").innerHTML += "<br><br>*Kernel exploit skipped.";
+  }
+}
+
+/* WALLPAPERS
+------------- */
+
+// Loads a wallpaper and displays it
+function loadWallpaper(imageUrl) {
+  if (imageUrl == "cache") {
+    imageUrl = localStorage.getItem("wallpaper_cache");
+    if (imageUrl === null) {
+      disableWallpaperMode();
+      return false;
+    }
+  } else {
+    if (imageUrl.startsWith("aHR0")) {
+      imageUrl = atob(imageUrl);
+    }
+    var image = new Image();
+    image.src = imageUrl;
+    image.onerror = function () {
+      disableWallpaperMode();
+    }
+  }
+  document.body.style.backgroundImage = "url(" + imageUrl + ")";
+  return true;
+}
+
+// Hides various elements/changes their opacity for optimum wallpaper experience, and sets a wallpaper
+function enableWallpaperMode(imageUrl) {
+  if (loadWallpaper(imageUrl) === true) {
+    document.body.style.backgroundSize = "cover";
+    document.querySelector(".credits" + ".fw" + targetFirmware.replace(".", "")).style.display = "none";
+    document.getElementById("website").style.opacity = "0.85";
+    document.getElementById("instructions").style.display = "none";
+    document.querySelector("main").style.backgroundColor = "transparent";
+  }
+}
+
+// Removes the wallpaper and resets the website's looks to default
+function disableWallpaperMode() {
+  document.getElementById("instructions").style.display = "block";
+  document.getElementById("website").style.opacity = "1.0";
+  document.querySelector(".credits" + ".fw" + targetFirmware.replace(".", "")).style.display = "block";
+  document.body.style.backgroundImage = "none";
+  document.querySelector("main").style.backgroundColor = "var(--background-color-2)";
+}
+
+/* STARTUP
+---------- */
+
+initialize();
+evaluateLastJailbreak();
+checkForUpdates();
+checkBinLoader();
+</script>
+</body>
+</html>
