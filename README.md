@@ -74,6 +74,9 @@ Compiled by Joonie86 (open source):
 Compiled by Nazky (open source):
 - ps4debug.bin for firmware 7.02 (https://github.com/Nazky/PS4Debug/releases)
 
+Compiled by ctn123 (closed source):
+- ps4debug.bin for firmware 9.00 (https://github.com/ctn123/PS4_Cheater)
+
 Compiled by OSM (open source):
 - orbis_toolbox.bin (https://github.com/OSM-Made/Orbis-Toolbox/releases)
 
@@ -85,6 +88,12 @@ Compiled by SiSTRo (closed source):
 Compiled by Karo (closed source):
 - GTA 5 mods (https://twitter.com/karo_sharifi/status/1343009143632834560)
 - hen_v2.1.3b.bin (https://twitter.com/karo_sharifi/status/1348775795976761354)
+
+Compiled by david1337hax (closed source):
+- GTA 5 Lamance mod for firmware 9.00 (https://david1337hax.com/download.html)
+
+Compiled by LushModz (closed source):
+- GTA 5 Expulsion mod for firmware 9.00 (https://github.com/LushModz)
 
 Compiled by TylerMods (closed source):
 - webrte.bin (https://ps4trainer.com)
