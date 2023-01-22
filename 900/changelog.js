@@ -1,10 +1,11 @@
 let changes=`2023-01-22:
   - Implemented customizable WebKit exploit address:
-    Using debug messages, you can tweak the address to increase the WebKit exploit
+    Using a test loop, you can tweak the address to increase the WebKit exploit
     execution speed. In the debug output "nn -> nnnn -> 0xnnnnnnnnn", the first
     number indicates how well the address has been guessed (the lower, the better).
     But don't set the address too high, or the WebKit exploit won't finish.
     Before trying to find a better address, run the payload "Disable ASLR" once.
+  - New option: WebKit address test loop.
 2023-01-21:
   - Improved stability.
   - New settings: payload size and debug messages.
@@ -91,5 +92,5 @@ let changes=`2023-01-22:
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
 let date="2023-01-22";
-let build="1";
+let build="2";
 let targetFirmware="9.00";

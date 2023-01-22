@@ -36,13 +36,17 @@ if (webkit_addr === null)
     var GUESS_FONT = 0x200c00000;
 else
     var GUESS_FONT = parseInt(webkit_addr);
+let test_loop = localStorage.getItem("enable_test_loop");
 let payloadFileNames = document.location.hash.substr(1).split(",");
 let logArea = document.getElementById("log_area");
 
 // Create info box.
 {
     let title = document.getElementById("title");
-    title.innerHTML = "Now jailbreaking with \"" + payloadFileNames.join(", ") + "\"";
+    if (test_loop)
+        title.innerHTML = "Now running WebKit address test loop";
+    else
+        title.innerHTML = "Now jailbreaking with \"" + payloadFileNames.join(", ") + "\"";
 
     // Applies a color scheme.
     function setColors(background1, background2, highlight, border, text1, text2 = text1) {

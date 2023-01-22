@@ -130,7 +130,14 @@ function poc() {
     }
     while (guessed_addr === null);
 
-    debugMessage(n_loops + " -> " + guessed_font + " -> " + hex(guessed_addr));
+    var loop_result = n_loops + " -> " + guessed_font + " -> " + hex(guessed_addr);
+    debugMessage(loop_result);
+    if (test_loop) {
+        if (confirm(loop_result + "\n\nConfirm to exit the test loop."))
+            history.pushState({}, "", ".");
+        location.reload();
+        return false;
+    }
 
     var p_s = '';
     p_s += ptrToString(26);

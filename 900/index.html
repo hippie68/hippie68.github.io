@@ -382,13 +382,40 @@
             <div class="tab_title">Settings</div>
             <div class="tab_content" style="display: flex">
                 <div style="margin-right: 8px">
-                    <!-- Wallpaper settings -->
-                    <div style="font-size: large; font-weight: bold">Wallpaper</div>
+                    <!-- Theme settings -->
+                    <div style="font-size: large; font-weight: bold">Theme</div>
                     <div class="tab_option_group">
+                        <label for="select_color_scheme">Color scheme:</label>
+                        <select id="select_color_scheme" onchange="setColorScheme(this.value)">
+                            <option value="cappuccino">Cappuccino</option>
+                            <option value="dark">Dark</option>
+                            <option value="lavender">Lavender</option>
+                            <option value="gray">Light</option>
+                            <option value="usa">Old Glory</option>
+                            <option value="pink">Pink</option>
+                            <option value="midnightblue">Retro Blues</option>
+                            <option value="rojigualda">Spain</option>
+                            <option value="wheat">Wheat & Wood</option>
+                            <option value="wildberry">Wildberry</option>
+                        </select><br>
+                        <label for="select_payload_style">Payload style:</label>
+                        <select id="select_payload_style" onchange="setPayloadStyle(this.selectedIndex)">
+                            <option value="0">Text</option>
+                            <option value="1">Text, centered</option>
+                            <option value="2">Buttons</option>
+                            <option value="3">Buttons, centered</option>
+                            <option value="4">Hybrid</option>
+                            <option value="5">Hybrid, centered</option>
+                        </select><br>
+                        <label for="select_payload_size">Payload size:</label>
+                        <select id="select_payload_size" onchange="setPayloadSize(this.value)">
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                        </select><br>
                         <label for="enable_wallpaper">Enable wallpaper</label>
                         <input type="checkbox" id="enable_wallpaper" onclick="toggleEnableWallpaper()"><br>
                         <label for="select_wallpaper">Wallpaper:</label>
-                        <select id="select_wallpaper" onchange="selectWallpaper(this.value)" style="width:auto">
+                        <select id="select_wallpaper" onchange="selectWallpaper(this.value)">
                             <option value="cache" class="offline_cache" selected>Offline cache</option>
                             <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2QxMDYxMGJkZDY3MjcyOWNjZWQzNjhhYzg5NWRiMDQ4NmI4NmIwMTguanBnCg==">Assassin's Creed: Black Flag</option>
                             <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Q1MzgwNDJiMTM3MjY4NTQwZjE4MjQ5NzgyZmZiNmMxNWQwNGI0YjAuanBnCg==">Assassin's Creed: Valhalla #1</option>
@@ -423,7 +450,7 @@
                             <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2U3ZGE1NzQ4MmVmMDcyZjkzOTQyODAwOGUxZjdmZGMzYjRmYTAwM2EuanBnCg==">The Witcher 3 Triss Merrigold</option>
                         </select><br>
                         <button id="button_cache_wallpaper" onclick="cacheWallpaper()" style="display: block; width: 100%">Cache selected wallpaper</button>
-                        <button id="wallpaper_cache" onclick="deleteWallpaperCache()" style="width: 100%">Delete offline cache</button> <!-- "Delete data" buttons have the same ID name as the key they delete -->
+                        <button id="wallpaper_cache" onclick="deleteWallpaperCache()" style="width: 100%">Delete offline cache</button><br> <!-- "Delete data" buttons have the same ID name as the key they delete -->
                     </div>
                 </div>
                 <div>
@@ -436,6 +463,8 @@
                         <input type="checkbox" id="disable_binloader" onclick="toggleBinLoader()"><br>
                         <label for="enable_debug">Enable debug messages</label>
                         <input type="checkbox" id="enable_debug" onclick="toggleDebug()"><br>
+                        <label for="enable_test_loop">Enable WebKit address test loop</label>
+                        <input type="checkbox" id="enable_test_loop" onclick="toggleTestLoop()"><br>
                         <label for="select_webkit_addr">WebKit address:</label>
                         <select id="select_webkit_addr" onchange="setWebkitAddress(this.value)">
                             <option value="0x200430000">0x200430000 (original)</option>
@@ -452,20 +481,6 @@
                     <div class="tab_option_group" style="margin-bottom: 8px">
                         <label for="disable_payload_info">Hide payload descriptions</label>
                         <input type="checkbox" id="disable_payload_info" onclick="togglePayloadInfo()"><br>
-                        <label for="select_payload_style">Payload style:</label>
-                        <select id="select_payload_style" onchange="setPayloadStyle(this.selectedIndex)">
-                            <option value="0">Text</option>
-                            <option value="1">Text, centered</option>
-                            <option value="2">Buttons</option>
-                            <option value="3">Buttons, centered</option>
-                            <option value="4">Hybrid</option>
-                            <option value="5">Hybrid, centered</option>
-                        </select><br>
-                        <label for="select_payload_size">Payload size:</label>
-                        <select id="select_payload_size" onchange="setPayloadSize(this.value)">
-                            <option value="medium">Medium</option>
-                            <option value="large">Large</option>
-                        </select><br>
                         <label for="select_goldhen">GoldHEN version:</label>
                         <select id="select_goldhen" onchange="setGoldHenVersion(this.value)">
                             <option value="all">Show all</option>
@@ -485,19 +500,6 @@
                             <option value="ps4_regular">Regular PS4</option>
                             <option value="ps4_pro">PS4 Pro</option>
                         </select><br>
-                        <label for="select_color_scheme">Color scheme:</label>
-                        <select id="select_color_scheme" onchange="setColorScheme(this.value)">
-                            <option value="cappuccino">Cappuccino</option>
-                            <option value="dark">Dark</option>
-                            <option value="lavender">Lavender</option>
-                            <option value="gray">Light</option>
-                            <option value="usa">Old Glory</option>
-                            <option value="pink">Pink</option>
-                            <option value="midnightblue">Retro Blues</option>
-                            <option value="rojigualda">Spain</option>
-                            <option value="wheat">Wheat & Wood</option>
-                            <option value="wildberry">Wildberry</option>
-                        </select>
                     </div>
                     <button onclick="restoreDefaultSettings()" style="width: 100%">Restore default settings</button>
                 </div>
@@ -702,6 +704,7 @@ function initialize() {
     initializeCheckbox("disable_youreallset");
     initializeCheckbox("disable_binloader");
     initializeCheckbox("enable_debug");
+    initializeCheckbox("enable_test_loop");
 
     // Settings tab, various elements
     {
@@ -840,6 +843,14 @@ function toggleDebug() {
         localStorage.setItem("enable_debug", "1");
     } else {
         localStorage.removeItem("enable_debug");
+    }
+}
+
+function toggleTestLoop() {
+    if (localStorage.getItem("enable_test_loop") === null) {
+        localStorage.setItem("enable_test_loop", "1");
+    } else {
+        localStorage.removeItem("enable_test_loop");
     }
 }
 
