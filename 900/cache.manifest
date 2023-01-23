@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# random: ef81e220acf40a8b4de2164cf5d95270
+# random: 07981d75aa6223e28f20e9e392670d7d
 
 CACHE:
 app2usb.bin
@@ -30,6 +30,7 @@ linux_3gb_pro.js
 linux_4gb.js
 linux_4gb_pro.js
 mira.js
+mira_loader.bin
 mira_loader/malloc.js
 mira_loader/mira_loader.js
 mira_loader/netcat.js

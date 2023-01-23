@@ -472,7 +472,7 @@
                             <option value="custom">Custom as set below</option>
                         </select><br>
                         <div style="display: none">
-                            <input type="text" id="input_webkit_addr" oninput="setCustomWebkitAddress(this.value)" style="width: 115px"><br>
+                            <input type="text" id="input_webkit_addr" onchange="setCustomWebkitAddress(this.value)" style="width: 115px"><br>
                         </div>
                     </div>
                     <div style="height: 16px"></div>
@@ -581,6 +581,7 @@
                 <a class="payload_link ps4_pro" href="javascript:selectPayload('linux_3gb_pro.js')" onmouseover="showPayloadInfo('linux3gb')">Linux PS4 Pro (3 GB)</a>
                 <a class="payload_link ps4_pro" href="javascript:selectPayload('linux_4gb_pro.js')" onmouseover="showPayloadInfo('linux4gb')">Linux PS4 Pro (4 GB)</a>
                 <a class="payload_link" href="javascript:selectPayload('mira.js')" onmouseover="showPayloadInfo('mira')">Mira</a>
+                <a class="payload_link" href="javascript:selectPayload('mira_loader.bin')" onmouseover="showPayloadInfo('mira')">Mira Loader</a>
                 <a class="payload_link" href="javascript:selectPayload('Netcat')" onmouseover="showPayloadInfo('netcat')">Netcat</a>
                 <a class="payload_link" href="javascript:selectPayload('orbis_toolbox.bin')" onmouseover="showPayloadInfo('orbistoolbox')">Orbis Toolbox</a>
                 <a class="payload_link" href="javascript:selectPayload('ps4debug.bin')" onmouseover="showPayloadInfo('ps4debug')">PS4Debug</a>
@@ -983,11 +984,25 @@ function setCustomWebkitAddress(value) {
         localStorage.removeItem("webkit_addr");
         document.getElementById("input_webkit_addr").value = "0x200c00000";
     } else {
+        // Make sure the entered number is correct
+        if (isNaN(value)) {
+            alert("The WebKit address you have just entered is not a valid number: \"" + value + "\"\n\nThe address has not been saved.");
+            return;
+        }
+        let pageSize = 0x4000;
+        let addr = new Number(value);
+        let remainder = addr % pageSize;
+        if (remainder) {
+            addr = addr - remainder;
+            value = "0x" + addr.toString(16);
+            document.getElementById("input_webkit_addr").value = value;
+            alert("The entered WebKit address has been rounded down to " + value + ".");
+        }
+
         localStorage.setItem("custom_webkit_addr", value);
         localStorage.setItem("webkit_addr", value);
     }
 }
-
 
 // Payload style/size
 
