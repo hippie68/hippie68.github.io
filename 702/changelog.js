@@ -1,4 +1,7 @@
-let changes=`2022-07-31: Updated FTP payload (v1.07).
+let changes=`2023-01-24: Added GoldHEN 2.3 (Debug/Cheat/KLog Settings, GoldHEN shortcut, PS2
+  cheat support, southbridge info, improved app version detection, plugins support, FPS
+  counter, Title ID label feature, scanlines overlay, internal PKG installation support).
+2022-07-31: Updated FTP payload to v1.07 (many bug fixes and improvements).
 2022-03-24:
   - Added GoldHEN 2.2.2 (absolute cheat offsets & bug fixes).
   - Added GoldHEN version option to reduce clutter.
@@ -78,6 +81,6 @@ let changes=`2022-07-31: Updated FTP payload (v1.07).
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2022-07-31";
-let build="2";
+let date="2023-01-24";
+let build="1";
 let targetFirmware="7.02";
