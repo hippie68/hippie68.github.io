@@ -412,6 +412,7 @@
                             <option value="medium">Medium</option>
                             <option value="large">Large</option>
                         </select><br>
+                        <br>
                         <label for="enable_wallpaper">Enable wallpaper</label>
                         <input type="checkbox" id="enable_wallpaper" onclick="toggleEnableWallpaper()"><br>
                         <label for="select_wallpaper">Wallpaper:</label>
@@ -581,7 +582,7 @@
                 <a class="payload_link ps4_pro" href="javascript:selectPayload('linux_3gb_pro.js')" onmouseover="showPayloadInfo('linux3gb')">Linux PS4 Pro (3 GB)</a>
                 <a class="payload_link ps4_pro" href="javascript:selectPayload('linux_4gb_pro.js')" onmouseover="showPayloadInfo('linux4gb')">Linux PS4 Pro (4 GB)</a>
                 <a class="payload_link" href="javascript:selectPayload('mira.js')" onmouseover="showPayloadInfo('mira')">Mira</a>
-                <a class="payload_link" href="javascript:selectPayload('mira_loader.bin')" onmouseover="showPayloadInfo('mira')">Mira Loader</a>
+                <a class="payload_link" href="javascript:selectPayload('mira_loader.bin')" onmouseover="showPayloadInfo('miraloader')">Mira Loader</a>
                 <a class="payload_link" href="javascript:selectPayload('Netcat')" onmouseover="showPayloadInfo('netcat')">Netcat</a>
                 <a class="payload_link" href="javascript:selectPayload('orbis_toolbox.bin')" onmouseover="showPayloadInfo('orbistoolbox')">Orbis Toolbox</a>
                 <a class="payload_link" href="javascript:selectPayload('ps4debug.bin')" onmouseover="showPayloadInfo('ps4debug')">PS4Debug</a>
@@ -785,7 +786,8 @@ function showPayloadInfo(tag) {
         case "linux3gb":         text = "Loads Linux from a prepared USB storage device. Leaves Linux with 5 GB of RAM, as 3 GB will be used for graphics. Do not use this payload during Linux installation."; break;
         case "linux4gb":         text = "Loads Linux from a prepared USB storage device. Leaves Linux with 4 GB of RAM, as 4 GB will be used for graphics. Do not use this payload during Linux installation."; break;
         case "mira":             text = "Enables homebrew and Debug Settings. Might not work with some of the latest backports."; break;
-        case "netcat":           text = "Enables you to send an additional payload file from a computer. Can be selected multiple times when using \"Multiple payloads\"."; break;
+        case "miraloader":       text = "Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\"."; break;
+        case "netcat":           text = "Enables you to send an additional payload file from a computer (to port 9020). Can be selected multiple times when using \"Multiple payloads\"."; break;
         case "orbistoolbox":     text = "Modifies the PS4 UI to help with launching and developing homebrew. A new PS4 menu entry, \"Settings - *Orbis Toolbox\", will appear."; break;
         case "ps4debug":         text = "A debugger for the PS4. Required by some PC applications, e.g. Save Mounter and Offline Account Activator."; break;
         case "restore":          text = "Restores a backup done earlier by the Backup payload."; break;
@@ -1481,7 +1483,8 @@ function selectPayload(payloadString) {
         let newPayloads = payloadString.substring(payloadString.indexOf("#") + 1).split(",");
         // Add new payloads to the list, one by one
         for (let i = 0; i < newPayloads.length; i++) {
-            if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "Netcat") { // No duplicates except for Netcat
+            // No duplicates except for Netcat and Mira Loader
+            if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "Netcat" || newPayloads[i] == "mira_loader.bin") {
                 if (payload_chain.innerHTML == payloadChainDefaultText) {
                     payload_chain.innerHTML = newPayloads[i];
                 } else {
