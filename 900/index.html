@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html manifest="cache.manifest">
+<head>
+    <meta charset="UTF-8">
+    <title>Jailbreak</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Grid layout */
+
+        #website {
+            display: grid;
+            grid-template-areas: 'top' 'middle' 'bottom';
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+        }
+
+        #website > header {
+            align-items: center;
+            background-color: var(--background-color-1);
+            border-color: var(--border-color);
+            border-style: none none solid;
+            border-width: 1px;
+            display: none;
+            grid-area: top;
+            justify-content: space-between;
+        }
+
+        #website > main {
+            background-color: var(--background-color-2);
+            color: var(--text-color-2);
+            display: none;
+            grid-area: middle;
+            overflow: auto;
+            padding: 8px 8px 0;
+            position: relative;
+        }
+
+        #website > footer {
+            background-color: var(--background-color-1);
+            border-color: var(--border-color);
+            border-style: solid none none;
+            border-width: 1px;
+            display: none;
+            grid-area: bottom;
+            padding: 8px 0 0 8px;
+        }
+
+        /* Header */
+
+        #title {
+            color: var(--text-color-1);
+            font-size: x-large;
+            font-weight: bold;
+            padding: 8px;
+        }
+
+        #button_container {
+            align-items: stretch;
+            align-self: stretch;
+            display: flex;
+        }
+
+        #updateinfo {
+            align-self: center;
+            color: var(--text-color-1);
+            padding: 0 8px;
+        }
+
+        header button {
+            background-color: var(--background-color-1);
+            border: none;
+            color: var(--text-color-1);
+            font-size: large;
+            font-weight: bold;
+            margin: 0;
+            outline: none;
+            padding: 0 8px;
+        }
+
+        /* Tabs */
+
+        .tab {
+            background-color: var(--background-color-2);
+            border-color: var(--border-color);
+            border-style: none none solid solid;
+            border-width: 1px;
+            box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+            color: var(--text-color-2);
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .tab_content {
+            padding: 8px;
+        }
+
+        .tab_title {
+            align-items: baseline;
+            display: flex;
+            font-size: x-large;
+            font-weight: bold;
+            justify-content: space-between;
+            padding: 8px;
+        }
+
+        /* Settings tab */
+
+        .tab_option_group {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: right;
+        }
+
+        .custom_payload_title {
+            width: 100px;
+        }
+
+        .custom_payload_payloads {
+            width: 500px;
+        }
+
+        /* Footer */
+
+        #payload_chain_area {
+            display: none;
+            font-size: medium;
+            margin: 0 8px 8px 0;
+        }
+
+        #payload_chain {
+            align-items: center;
+            background-color: var(--background-color-2);
+            border: 1px solid var(--border-color);
+            color: var(--text-color-2);
+            display: flex;
+            flex-grow: 1;
+            padding: 0 6px;
+        }
+
+        #payload_chain_buttons > :first-child {
+            margin: 0 4px 0 8px;
+        }
+
+        #payload_chain_buttons > * {
+            margin: 0 4px 0 0;
+        }
+
+        #payload_chain_buttons > :last-child {
+            margin: 0;
+        }
+
+        #payload_info {
+            color: var(--text-color-1);
+            display: none;
+            font-size: medium;
+            margin: 0 8px 8px 0;
+        }
+
+        .payload_link {
+            color: var(--text-color-1);
+            display: inline-block; /* Undesired side-effect: this adds 4px additional horizontal margin between items */
+            font-size: medium;
+            font-weight: bold;
+            margin: 0 12px 8px 0; /* margin-right: taking the 4px into account */
+            text-decoration: none;
+        }
+
+        .payload_link.show {
+            display: inline-block;
+        }
+
+        .payload_style_plain:hover {
+            text-decoration: underline;
+        }
+
+        .payload_style_button {
+            color: var(--text-color-1);
+            background-color: var(--background-color-1);
+            border: 1px solid var(--border-color);
+            margin-right: 4px;
+            padding: 2px 8px;
+        }
+
+        .payload_style_button:hover {
+            background-color: var(--highlight-color);
+            color: var(--text-color-1);
+         }
+
+        .payload_style_button:active {
+            box-shadow: inset 0 0 5px var(--text-color-1);
+        }
+
+        .payload_style_hybrid {
+            margin-left: -2px;
+            margin-right: 6px;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+
+        .payload_style_hybrid:hover {
+            background-color: var(--highlight-color);
+        }
+
+        .credits {
+            color: var(--border-color);
+            font-size: small;
+            margin: 0 8px 8px 0;
+        }
+
+        #binloader_status {
+            background-color: var(--background-color-2);
+            border: 1px solid var(--border-color);
+            color: var(--text-color-2);
+            display: none;
+            padding-left: 4px;
+            padding-right: 4px;
+        }
+
+        /* Standard UI elements */
+
+        /* Reminder: Payloads are links and not buttons */
+        button {
+            background-color: var(--background-color-1);
+            border: 1px solid var(--border-color);
+            color: var(--text-color-1);
+            font-size: medium;
+            text-decoration: none;
+        }
+
+        button:hover {
+            background-color: var(--highlight-color);
+        }
+
+        button:active {
+            box-shadow: inset 0 0 5px var(--text-color-1);
+        }
+
+        input {
+            background-color: var(--background-color-2);
+            border: 1px solid var(--border-color);
+            color: var(--text-color-2);
+            font-size: medium;
+        }
+
+        input[type="checkbox"] {
+            text-decoration: none;
+            transform: scale(1.24);
+            transform-origin: right;
+        }
+
+        input[type="text"] {
+            padding: 2px 6px;
+        }
+
+        select {
+            background-color: var(--background-color-2);
+            border-color: var(--border-color);
+            color: var(--text-color-2);
+            font-size: medium;
+        }
+
+        .tab_option_group select {
+            width: 230px;
+        }
+
+
+        ::-webkit-scrollbar {
+            width: 1em;
+        }
+    </style>
+    <style id="scrollbar"></style>
+    <script>
+        // Firmware safety check to prevent system lockups
+        var useragent = navigator.userAgent;
+        if (useragent.includes("PlayStation")) {
+            var firmware = useragent.match(/[0-9]+\.[0-9]{2}/);
+        } else {
+            alert("You are not using a PS4 to view this website. Do not click on any payload links, as they might cause your system to freeze.\nThis website is only to be used with a PS4. Proceed at your own risk!");
+        }
+    </script>
+</head>
+<body>
+    <script src="changelog.js"></script>
+    <div id="website">
+        <header>
+            <span id="title">PS4 JAILBREAK</span>
+            <script>
+                // Show for which target firmware the website is made
+                document.title += " " + targetFirmware;
+                document.getElementById("title").innerHTML += " FOR FIRMWARE " + targetFirmware;
+                // Show current firmware if it differs
+                if (firmware !== undefined && firmware !== targetFirmware) {
+                    alert("firmware: '" + firmware + "', targetFirmware: '" + target_Firmware + "'");
+                    document.getElementById("title").innerHTML += `<span style="color: var(--border-color)">  Current firmware:  ` + firmware;
+                }
+            </script>
+            <div id="button_container">
+                <div id="updateinfo"></div> <!-- Displays caching progress -->
+                <button onmousedown="showTab('tab_changelog', event)">Changelog</button>
+                <button onmousedown="showTab('tab_options', event)">Settings</button>
+                <script>
+                    function hideTabs() {
+                        let x;
+                        // Hide all tabs
+                        x = document.getElementsByClassName("tab");
+                        for (let i = 0; i < x.length; i++) {
+                            x[i].style.display = "none";
+                        }
+                        // Unpress all buttons
+                        x = document.getElementsByTagName("button");
+                        for (let i = 0; i < x.length; i++) {
+                            x[i].style.boxShadow = "";
+                            x[i].style.backgroundColor = "";
+                        }
+                    }
+
+                    function showTab(id, event) {
+                        let tab = document.getElementById(id);
+                        if (tab.style.display == "block") {
+                            // Hide tab if already open
+                            tab.style.display = "none";
+                            // Unpress button
+                            event.target.style.boxShadow = "";
+                            event.target.style.backgroundColor = "";
+                        } else {
+                            hideTabs();
+                            // Show tab
+                            tab.style.display = "block";
+                            // Make button look pressed
+                            event.target.style.boxShadow = "inset 0 0 5px var(--text-color-1)";
+                            event.target.style.backgroundColor = "var(--highlight-color)";
+                        }
+                    }
+                </script>
+            </div>
+        </header>
+    <main>
+        <div id="instructions" style="overflow: hidden; width: 98vw">
+            <noscript><span style="color: red">JavaScript is required to run the jailbreak. Press the OPTIONS button, go to "Settings" and check "Enable JavaScript", then refresh the web page.</span></noscript>
+            <b style="font-size: large">Instructions</b>
+            <p>
+                This website is now cached in your PS4 browser. You can disconnect your PS4 from the Internet and, from now on, keep using the jailbreak offline. For quick access, feel free to add a bookmark.<br>
+                To jailbreak, first of all you need to prepare a USB device with the image file <a style="color: var(--text-color-2)" href="https://github.com/ChendoChap/pOOBs4">"exfathax.img"</a> (external link). After that, click on the payload that you want to load. If all goes well, after 20-40 seconds you will see the message <i>"You're all set!"</i>, followed by <i>"There is not enough free system memory"</i>. The jailbreak consists of two parts: WebKit exploit and kernel exploit.
+            </p>
+            <b>Several messages can appear:</b>
+            <ul>
+                <li><b>"There is not enough free system memory."</b>: It means the WebKit exploit was not successful. Press "OK" to try again.</li>
+                <li><b>"Insert USB device now."</b>: Connect the prepared USB device and follow the displayed instructions.</li>
+                <li><b>"Failed to trigger the kernel exploit."</b>: The system may have become unstable because the USB stick was not inserted correctly. It may be a good idea to reboot and try again.</li>
+                <li><b>"You're all set!"</b>: The jailbreak was successful, and the selected payload has been loaded into memory.</li>
+            </ul>
+            <b>Additional information:</b>
+            <ul>
+                <li>Loading a GoldHEN or Mira payload unlocks installed homebrew applications and enables "Debug Settings": Leave the browser and go to "Settings - *Debug Settings - Game - Package Installer" to install homebrew PKG files from the root folder of an exFAT-formatted USB storage device. <b>Do not ever go into "*Debug Settings - System - IDU Mode", or your PS4 will brick!</b></li>
+                <li>Current GoldHEN payloads by default hide the Debug Settings and instead create a GoldHEN icon in the home screen's function area.</li>
+                <li>For GoldHEN's Rest Mode support to work, make sure to enable "Keep Application Suspended" in "Settings - Power Save Settings - See Features Available in Rest Mode".</li>
+                <li>You can send additional payload files from a computer: First, load the "Mira Loader" payload. Then, on your computer, use a Netcat program to send your payload files to the PS4.</li>
+                <li>Some payloads loaded via WebKit exploit continue to run inside the browser window. To leave the browser while keeping them alive, use the PS button.</li>
+                <li>GoldHEN 2.x's BinLoader server, found outside the browser in "Settings - *GoldHEN*", activates instant payload loading. This website feature only works if the website is self-hosted via HTTP. It will not be available when using HTTPS or hippie68.github.io. Please take care not to load the same payload twice while the payload is still running.</li>
+            <ul>
+        </div>
+        <div class="tab" id="tab_changelog">
+            <div class="tab_title">Changelog<span id="tab_changelog_version" style="font-size: medium; font-weight: normal"></span></div>
+            <div class="tab_content" id="changelog">
+                Please report any bugs by creating an issue on <a style="color: var(--text-color-2)" href="https://github.com/hippie68/hippie68.github.io/issues">GitHub</a> (external link).<br>
+                General information about the website: <a style="color: var(--text-color-2)" href="https://github.com/hippie68/hippie68.github.io#readme">README.md</a> (external link).<br><br>
+                <script>
+                    // Shows the changelog, replacing newlines with "<br>"
+                    document.getElementById("changelog").innerHTML += changes.replace(/\n/g, "<br>");
+                    document.getElementById("tab_changelog_version").innerHTML = "Release " + date + "#" + build;
+                </script>
+            </div>
+        </div>
+        <div class="tab" id="tab_options"> <!-- Checkboxes have the same ID name as the key they store -->
+            <div class="tab_title">Settings</div>
+            <div class="tab_content" style="display: flex">
+                <div style="margin-right: 8px">
+                    <!-- Theme settings -->
+                    <div style="font-size: large; font-weight: bold">Theme</div>
+                    <div class="tab_option_group">
+                        <label for="select_color_scheme">Color scheme:</label>
+                        <select id="select_color_scheme" onchange="setColorScheme(this.value)">
+                            <option value="cappuccino">Cappuccino</option>
+                            <option value="dark">Dark</option>
+                            <option value="lavender">Lavender</option>
+                            <option value="gray">Light</option>
+                            <option value="usa">Old Glory</option>
+                            <option value="pink">Pink</option>
+                            <option value="midnightblue">Retro Blues</option>
+                            <option value="rojigualda">Spain</option>
+                            <option value="wheat">Wheat & Wood</option>
+                            <option value="wildberry">Wildberry</option>
+                        </select><br>
+                        <label for="select_payload_style">Payload style:</label>
+                        <select id="select_payload_style" onchange="setPayloadStyle(this.selectedIndex)">
+                            <option value="0">Text</option>
+                            <option value="1">Text, centered</option>
+                            <option value="2">Buttons</option>
+                            <option value="3">Buttons, centered</option>
+                            <option value="4">Hybrid</option>
+                            <option value="5">Hybrid, centered</option>
+                        </select><br>
+                        <label for="select_payload_size">Payload size:</label>
+                        <select id="select_payload_size" onchange="setPayloadSize(this.value)">
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                        </select><br>
+                        <br>
+                        <label for="enable_wallpaper">Enable wallpaper</label>
+                        <input type="checkbox" id="enable_wallpaper" onclick="toggleEnableWallpaper()"><br>
+                        <label for="select_wallpaper">Wallpaper:</label>
+                        <select id="select_wallpaper" onchange="selectWallpaper(this.value)">
+                            <option value="cache" class="offline_cache" selected>Offline cache</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2QxMDYxMGJkZDY3MjcyOWNjZWQzNjhhYzg5NWRiMDQ4NmI4NmIwMTguanBnCg==">Assassin's Creed: Black Flag</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Q1MzgwNDJiMTM3MjY4NTQwZjE4MjQ5NzgyZmZiNmMxNWQwNGI0YjAuanBnCg==">Assassin's Creed: Valhalla #1</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Y0YzY1MDE2MzI5NTc4M2QyNThiZWRjMzU2MTBjMjUzOThiMTdkNWUuanBnCg==">Assassin's Creed: Valhalla #2</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzc5MTVhMjM2NDI3MjZhMDkxNmFmNDk0NTRlZjdkNmM4MmIzZWE4MmYuanBnCg==">Bloodborne #1</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzYzY2M1NDk3NDY1NzcwMzM0NmRmMjAzYTZmODk0ZjM1MmEwMmJhM2YuanBnCg==">Bloodborne #2</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzIyMDk0ZGIwNjBkYTQ5NmVhMTNkZGJkNGEyMzUwZmJjOWUyODY5ZjIuanBnCg==">Code Vein</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2I2NDhjODFlOTVkNmQzNjg2NTVhNDIwNGRhNDNkMjUzYjFjMWQyYjIuanBnCg==">Cyberpunk 2077 Girl #1</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2ZkNTgxMGM0NWFiYzg5YjBlZTFiNTEwYjI2OGRhZjZiYmUwNzViODEuanBnCg==">Cyberpunk 2077 Girl #2</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzkzZmQ0N2JlMTZhMjM4ODk2NjkzYjAwZmVhZGY0Y2ZkMzE3ZGQ2NjkuanBnCg==">Cyberpunk 2077 Main Cover</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzYwOWQ5ZDlkMTdkMWU2NGM0OTViM2U3ZTM1YjI4NTIzZmQ2Njk5ZDcuanBnCg==">Dark Souls #1</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzI5MDhjNDM4ZTdjNGE1NDM4ZDkyNWYxZWFiNmNlN2YyNjc1NGNkNGQuanBnCg==">Dark Souls #2</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2U4OTBmZWIxYzJjZjJmNmI0ZGFmY2RmMDg3OGZhYmM3Yzg2OTQ2ZjEuanBnCg==">Days Gone</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzA2N2Y4MWZhOWE0MzhhMjM3ZjhkNzg2NzczODVhYzVmNzhiZDkyOTYuanBnCg==">Detroit: Become Human</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzQwMGQ3MjFmMGJjMWUzYTcxYjIwNWI1YTgxZmQ4YjlkZGQ2NGY2ZmYuanBnCg==">Dying Light</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2NiMDBmMWNjMDQ0NDEwYzczYWYxNzdmMDdlZjdjZTAxN2E3MTQ3NWUuanBnCg==">Fallout: New Vegas</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzIzZjZiNzI3MTNhM2JlZjM0ZGE4Y2EzZDliMTcyNTlkMjgwMTJmYzUuanBnCg==">Ghost of Tsushima</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzMxOTEwOGY2MTYyNjViYWJlNzI0YjM2ZjgwZTJlYTI1NWY0Yjk0OGMuanBnCg==">God of War</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzQwNjZlZGExNzEyMmJjMDZiN2FkNTk0M2VkNWNkZDIwYjQ1MWU4MDkuanBnCg==">Grand Theft Auto</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzg5MWJmZGI3MjNlYTUxY2Y2Y2YwOGU1NDg1ZjMzYTU2NGJhYjU0NTMuanBnCg==">Metro Exodus</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzUxYTlkMDNjNTg5NDJjYTU4MGZkYWNmNDQwZWE0YjU1NTYwNTZhZjMuanBnCg==">Monster Hunter: World</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzA3NjdjOGY3ZTEzNzM0ZGNkZGU3NDFmNzM1NjIzMzZkMjRhOThjOGEuanBnCg==">Need for Speed</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2I2ZTJmMzZlYTEzNDk2NDMzOWM5ZTI2N2Q5MDliNzQ2NDMzZDcxZDYuanBnCg==">NieR: Automata</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2IxYWIwNzhmMzc1Zjk5MTgwY2RiMzg5MGM0ZDZiYjIzYTkwMThlMjEuanBnCg==">No Man's Sky</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2NjMDMyMDljYjEzMDQ0ZDJmNzk0NWRmYWQzZDY5N2Q0NjUxNTM5NmMuanBnCg==">Persona 5</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2EwMGExYWU4ZjFlMjQ1NTM5ZTY1YjQ2N2NkODZiNDk1MDQ4Y2M0YzguanBnCg==">Red Dead Redemption 2</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzM4Mjc3NTk2ZGVhOTFiOGU3YzQzZDU4YjM4YzYxZjc1NDYyZjc1YzUuanBnCg==">Sekiro: Shadows Die Twice</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2Y2ZmZlODE5YTBlYTVkZjFhZDQwNDc4NGVjNDRjNzJjZGJhZmM0MjMuanBnCg==">Spider-Men</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzY5MWZhMWE3M2Y0NDE5ZGU3ZTRjNTBkNGI0ZmZhMTIwM2QyNTc3Y2QuanBnCg==">The Last of Us Ellie #1</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2E4NTdiZTY5MmMyNzdhYmFiMDE0NDBhYmQ3MTdkNmE0NjdiZWYxZTEuanBnCg==">The Last of Us Ellie #2</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tLzVkMzI3MGIwNWYxNDY0M2RkNmIyZTBkYTFkZDY0MDA3NDEwYjExNzcuanBnCg==">The Witcher 3 Geralt and Ciri</option>
+                            <option value="aHR0cHM6Ly9iYXlpbWcuY29tL2U3ZGE1NzQ4MmVmMDcyZjkzOTQyODAwOGUxZjdmZGMzYjRmYTAwM2EuanBnCg==">The Witcher 3 Triss Merrigold</option>
+                        </select><br>
+                        <button id="button_cache_wallpaper" onclick="cacheWallpaper()" style="display: block; width: 100%">Cache selected wallpaper</button>
+                        <button id="wallpaper_cache" onclick="deleteWallpaperCache()" style="width: 100%">Delete offline cache</button><br> <!-- "Delete data" buttons have the same ID name as the key they delete -->
+                    </div>
+                </div>
+                <div>
+                    <!-- Jailbreak settings -->
+                    <div style="font-size: large; font-weight: bold">Jailbreak</div>
+                    <div class="tab_option_group">
+                        <label for="disable_youreallset">Disable the "You're all set!" message</label>
+                        <input type="checkbox" id="disable_youreallset" onclick="toggleYoureAllSet()"><br>
+                        <label for="disable_binloader">Ignore GoldHEN's BinLoader server</label>
+                        <input type="checkbox" id="disable_binloader" onclick="toggleBinLoader()"><br>
+                        <label for="enable_debug">Enable debug messages</label>
+                        <input type="checkbox" id="enable_debug" onclick="toggleDebug()"><br>
+                        <label for="enable_test_loop">Enable WebKit address test loop</label>
+                        <input type="checkbox" id="enable_test_loop" onclick="toggleTestLoop()"><br>
+                        <label for="select_webkit_addr">WebKit address:</label>
+                        <select id="select_webkit_addr" onchange="setWebkitAddress(this.value)">
+                            <option value="0x200430000">0x200430000 (original)</option>
+                            <option value="0x200c00000">0x200c00000 (tweaked)</option>
+                            <option value="custom">Custom as set below</option>
+                        </select><br>
+                        <div style="display: none">
+                            <input type="text" id="input_webkit_addr" onchange="setCustomWebkitAddress(this.value)" style="width: 115px"><br>
+                        </div>
+                    </div>
+                    <div style="height: 16px"></div>
+                    <!-- Miscellaneous settings -->
+                    <div style="font-size: large; font-weight: bold">Miscellaneous</div>
+                    <div class="tab_option_group" style="margin-bottom: 8px">
+                        <label for="disable_payload_info">Hide payload descriptions</label>
+                        <input type="checkbox" id="disable_payload_info" onclick="togglePayloadInfo()"><br>
+                        <label for="select_goldhen">GoldHEN version:</label>
+                        <select id="select_goldhen" onchange="setGoldHenVersion(this.value)">
+                            <option value="all">Show all</option>
+                            <option value="2.1.2">2.1.2</option>
+                            <option value="2.3">2.3</option>
+                        </select><br>
+                        <label for="select_gta5">GTA 5 version:</label>
+                        <select id="select_gta5" onchange="setGTA5Version(this.value)">
+                            <option value="all">Show all</option>
+                            <option value="none">Show none</option>
+                            <option value="v1.38">1.38</option>
+                        </select><br>
+                        <label for="select_linux">Linux version:</label>
+                        <select id="select_linux" onchange="setLinuxVersion(this.value)">
+                            <option value="all">Show all</option>
+                            <option value="none">Show none</option>
+                            <option value="ps4_regular">Regular PS4</option>
+                            <option value="ps4_pro">PS4 Pro</option>
+                        </select><br>
+                    </div>
+                    <button onclick="restoreDefaultSettings()" style="width: 100%">Restore default settings</button>
+                </div>
+            </div>
+        </div>
+        <!-- Custom payload options -->
+        <div class="tab" id="tab_custom_payloads" style="border-style: solid none none solid; bottom: 0; top: initial">
+        <!-- Custom payload chains -->
+        <div style="padding: 8px">
+            <div style="font-size: large; font-weight: bold">Custom payload chains</div>
+                <div class="tab_option_group" style="text-align: left">
+                    <table>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Payloads*</th>
+                            <th></th>
+                        </tr>
+                        <tr>
+                            <td><input id="custom_1_enabled" onchange="saveCustomPayloadCheckbox(this.id)" type="checkbox"></td>
+                            <td><input class="custom_payload_title" id="custom_1_title" onchange="saveCustomPayloadTitle(this.id)" value="Chain 1"></td>
+                            <td><input class="custom_payload_payloads" id="custom_1_payloads"></td>
+                            <td><button id="custom_1_save" onclick="saveCustomPayloadPayloads(this.id)">Save</button></td>
+                        </tr>
+                        <tr>
+                            <td><input id="custom_2_enabled" onchange="saveCustomPayloadCheckbox(this.id)" type="checkbox"></td>
+                            <td><input class="custom_payload_title" id="custom_2_title" onchange="saveCustomPayloadTitle(this.id)" value="Chain 2"></td>
+                            <td><input class="custom_payload_payloads" id="custom_2_payloads"></td>
+                            <td><button id="custom_2_save" onclick="saveCustomPayloadPayloads(this.id)">Save</button></td>
+                        </tr>
+                        <tr>
+                            <td><input id="custom_3_enabled" onchange="saveCustomPayloadCheckbox(this.id)" type="checkbox"></td>
+                            <td><input class="custom_payload_title" id="custom_3_title" onchange="saveCustomPayloadTitle(this.id)" value="Chain 3"></td>
+                            <td><input class="custom_payload_payloads" id="custom_3_payloads"></td>
+                            <td><button id="custom_3_save" onclick="saveCustomPayloadPayloads(this.id)">Save</button></td>
+                        </tr>
+                    </table>
+                    <span>*To save a new payload list, select multiple payloads below and then press "Save".</span><br>
+                    <button onclick="deleteCustomPayloads()">Delete all custom payload data</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div>
+            <div id="payload_chain_area">
+                <span id="payload_chain"></span>
+                <div id="payload_chain_buttons">
+                    <button onclick="resetPayloadChain()">Reset</button>
+                    <button onclick="togglePayloadChainOptions()">Advanced options...</button>
+                    <button onclick="toggleChainRecording()">Cancel</button>
+                    <button onclick="launchPayloadChain()">Launch</button>
+                </div>
+            </div>
+            <div id="payload_info">Select a payload:</div>
+            <div class="payloadlist" onmouseout="resetPayloadInfo()">
+                <a class="payload_link custom_1" href="" style="display: none"></a>
+                <a class="payload_link custom_2" href="" style="display: none"></a>
+                <a class="payload_link custom_3" href="" style="display: none"></a>
+                <a class="payload_link multi" href="javascript:toggleChainRecording()" onmouseover="showPayloadInfo('multiplepayloads')">Multiple payloads...</a>
+            </div>
+        </div>
+        <div class="credits">Credits: sleirsgoevy (WebKit exploit and Web Activator), ChendoChap (kernel exploit), Google Project Zero (WebKit vulnerability), M A 7 (ideas), SiSTRo (GoldHEN), OSM (Orbis Toolbox), ctn123 (PS4Debug), the psxita team (Linux payloads), david1337hax (GTA 5 Lamance), LushModz (GTA 5 Expulsion), Al-Azif (Mira and her payload collection).</div>
+        <div style="display: flex; justify-content: center">
+            <span id="binloader_status"></span>
+        </div>
+    </footer>
+<script src="bzip2.js"></script>
+<script>
+function sortWallpapers() {
+    let list = document.querySelectorAll("#select_wallpaper option:not(.offline_cache)");
+    let array = Array.prototype.slice.call(list, 0);
+    array.sort((a, b) => a.innerHTML > b.innerHTML ? 1 : -1);
+    list = document.querySelector("#select_wallpaper");
+    for (let i = 0; i < array.length; i++) {
+        list.append(array[i]);
+    }
+}
+
+// Adds user-defined offline wallpapers from file custom.js, for self-hosting
+function addWallpaper(fileName, title) {
+    let o = document.createElement("option");
+    o.value = fileName;
+    o.innerHTML = "*" + title;
+    document.querySelector("#select_wallpaper").append(o);
+    sortWallpapers();
+}
+
+function sortPayloads() {
+    let list = document.querySelectorAll(".payload_link:not(.multi)");
+    let array = Array.prototype.slice.call(list, 0);
+    array.sort((a, b) => a.innerHTML.toLowerCase() < b.innerHTML.toLowerCase() ? 1 : -1);
+    list = document.querySelector(".payloadlist");
+    for (let i = 0; i < array.length; i++) {
+        list.prepend(array[i]);
+    }
+}
+
+// Adds payloads from files payloads.js and custom.js
+function addPayload(fileName, title, description, tag) {
+    let a = document.createElement("a");
+    a.className = "payload_link";
+    if (tag)
+        a.className += " " + tag;
+    a.href = "javascript:selectPayload('" + fileName + "')";
+    a.innerHTML = title;
+    if (!description)
+        description = "Loads \"" + fileName + "\".";
+    a.onmouseover = function() { showPayloadInfo(description); };
+    document.querySelector(".payloadlist").append(a);
+    sortPayloads();
+}
+</script>
+<script src="payloads.js"></script>
+<script src="custom.js"></script>
+<script>
+/* INITIALIZATION
+   -------------- */
+
+const payloadChainDefaultText = "Click on a payload to add it to the list.";
+var binLoaderOnline = false;
+var lastPayloadLaunch = 0;
+
+// Shows application cache updates
+function checkForUpdates() {
+    document.getElementById("updateinfo").innerHTML = sessionStorage.getItem("last_status");
+    sessionStorage.removeItem("last_status");
+    window.applicationCache.onprogress = function (a) {
+        let percentage = Math.round(a.loaded / a.total * 100);
+        document.getElementById("updateinfo").innerHTML = "New content found. Updating cache: " + percentage + "%";
+    }
+    window.applicationCache.oncached = window.applicationCache.onupdateready = function () {
+        sessionStorage.setItem("last_status", "The website has been updated.");
+        window.location.reload();
+    }
+}
+
+// Sets elements depending on existing localStorage data
+function initialize() {
+    // Select saved offline wallpaper
+    {
+        let val = localStorage.getItem("wallpaper");
+        if (val) {
+            document.getElementById("select_wallpaper").value = val;
+        }
+    }
+
+    // Layout
+    applyColorScheme();
+    applyOptionEnableWallpaper();
+    applyOptionHidePayloadInfo();
+    applyPayloadStyle();
+    applyPayloadSize();
+    applyGoldHenVersion();
+    applyGTA5Version();
+    applyLinuxVersion();
+
+    // Custom payload chains
+    loadCustomPayload("custom_1");
+    loadCustomPayload("custom_2");
+    loadCustomPayload("custom_3");
+
+    // Settings tab, checkboxes
+    function initializeCheckbox(optionName) {
+        var checkbox = document.getElementById(optionName);
+        if (localStorage.getItem(optionName) == 1) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;
+        }
+    }
+    initializeCheckbox("enable_wallpaper");
+    initializeCheckbox("disable_payload_info");
+    initializeCheckbox("disable_youreallset");
+    initializeCheckbox("disable_binloader");
+    initializeCheckbox("enable_debug");
+    initializeCheckbox("enable_test_loop");
+
+    // Settings tab, various elements
+    {
+        let index, val;
+
+        // Set WebKit exploit address dropdown menu
+        val = localStorage.getItem("webkit_addr");
+        switch (val) {
+            case null:
+                document.getElementById("select_webkit_addr").value = "0x200c00000"; // Default
+                break;
+            case "0x200430000":
+                document.getElementById("select_webkit_addr").value = val;
+                break;
+            default:
+                document.getElementById("select_webkit_addr").value = "custom";
+                document.getElementById("input_webkit_addr").parentElement.style.display = "block";
+        }
+
+        // Set WebKit exploit custom address input text
+        val = localStorage.getItem("custom_webkit_addr");
+        if (val === null) {
+            document.getElementById("input_webkit_addr").value = "0x200c00000"; // Default
+        } else {
+            document.getElementById("input_webkit_addr").value = val;
+        }
+
+        // Set payload style dropdown menu
+        index = localStorage.getItem("payload_style");
+        if (index === null) {
+            document.getElementById("select_payload_style").selectedIndex = 0; // Default
+        } else {
+            document.getElementById("select_payload_style").selectedIndex = index;
+        }
+
+        // Set payload size dropdown menu
+        val = localStorage.getItem("payload_size");
+        if (val === null) {
+            document.getElementById("select_payload_size").value = "medium"; // Default
+        } else {
+            document.getElementById("select_payload_size").value = val;
+        }
+
+        // Set color scheme dropdown menu
+        val = localStorage.getItem("color_scheme");
+        if (val === null) {
+            document.getElementById("select_color_scheme").value = "gray"; // Default
+        } else {
+            document.getElementById("select_color_scheme").value = val;
+        }
+    }
+}
+
+/* OPTIONS/SETTINGS
+------------------- */
+
+// Payload info
+
+function showPayloadInfo(tag) {
+    let text;
+    switch (tag) {
+        //case "netcat":           text = "Enables you to send an additional payload file from a computer (to port 9020). Can be selected multiple times when using \"Multiple payloads\"."; break;
+        case "multiplepayloads": text = "Enables chaining of multiple payloads to run them all in one go. Select multiple payloads to chain them, then press \"Launch\"."; break;
+        default:                 text = tag; // For custom and self-hosted payloads
+    }
+    document.getElementById("payload_info").textContent = text;
+}
+
+function resetPayloadInfo() {
+    document.getElementById("payload_info").textContent = "Select a payload:";
+}
+
+function applyOptionHidePayloadInfo() {
+    if (localStorage.getItem("disable_payload_info") != "1") {
+        document.getElementById("payload_info").style.display = "block";
+    } else {
+        document.getElementById("payload_info").style.display = "none";
+    }
+}
+
+function togglePayloadInfo() {
+    if (localStorage.getItem("disable_payload_info") != 1) {
+        localStorage.setItem("disable_payload_info", 1);
+    } else {
+        localStorage.removeItem("disable_payload_info");
+    }
+    applyOptionHidePayloadInfo();
+}
+
+// Other checkbox functions
+
+function toggleYoureAllSet() {
+    if (localStorage.getItem("disable_youreallset") != 1) {
+        localStorage.setItem("disable_youreallset", "1");
+    } else {
+        localStorage.removeItem("disable_youreallset");
+    }
+}
+
+function toggleBinLoader() {
+    if (localStorage.getItem("disable_binloader") === null) {
+        localStorage.setItem("disable_binloader", "1");
+        setBinLoaderStatus(false);
+    } else {
+        localStorage.removeItem("disable_binloader");
+        checkBinLoader();
+    }
+}
+
+function toggleDebug() {
+    if (localStorage.getItem("enable_debug") === null) {
+        localStorage.setItem("enable_debug", "1");
+    } else {
+        localStorage.removeItem("enable_debug");
+    }
+}
+
+function toggleTestLoop() {
+    if (localStorage.getItem("enable_test_loop") === null) {
+        localStorage.setItem("enable_test_loop", "1");
+    } else {
+        localStorage.removeItem("enable_test_loop");
+    }
+}
+
+// Wallpaper
+
+function cacheWallpaper(attempt = 0) {
+    var imageUrl = atob(document.getElementById("select_wallpaper").value);
+    if (imageUrl.startsWith("http")) { // Only cache online resources
+        let select = document.getElementById("select_wallpaper");
+        select.disabled = true;
+        let button = document.getElementById("button_cache_wallpaper");
+        button.disabled = true;
+        let oldInnerHTML = button.innerHTML;
+        if (attempt === 0) {
+            button.innerHTML = "Requesting data, please wait ...";
+        } else {
+            button.innerHTML = "Retrying (" + attempt + "), please wait ...";
+        }
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", atob(data[0]) + imageUrl);
+        xhr.responseType = "arraybuffer";
+        // "Nothing happens" error
+        xhr.onerror = function () {
+            attempt++;
+            if (attempt === 10) {
+                alert("Caching failed after " + attempt + " attempts! Please try again later.");
+            } else {
+                cacheWallpaper(attempt);
+            }
+        };
+        // Show download progress
+        xhr.onprogress = (event) => {
+            button.innerHTML = "Caching, please wait ... " + Math.round(event.loaded / xhr.getResponseHeader("Content-Length") * 100) + "%";
+        };
+        // Cache when downloaded
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var blob = new Blob([xhr.response], {type: "image/jpeg"});
+                var fileReader = new FileReader();
+                fileReader.onload = function (event) {
+                    var result = event.target.result;
+                    try {
+                        localStorage.setItem("wallpaper_cache", result);
+                        let size = result.length / 1000000;
+                        alert("Wallpaper cached!\nImage size in cache: " + size.toFixed(2) + " MB");
+                        select.selectedIndex = 0;
+                        applyOptionEnableWallpaper();
+                        initializeButton("wallpaper_cache");
+                    } catch (error) {
+                        alert("Caching failed: " + error + "\nImage size (if it had been cached): " + size.toFixed(2) + " MB");
+                    }
+                };
+                fileReader.readAsDataURL(blob);
+            } else {
+                alert("Error! Server response: " + xhr.status);
+            }
+        };
+        // Re-enable the button when finished
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                select.disabled = false;
+                button.disabled = false;
+                button.innerHTML = oldInnerHTML;
+            }
+        };
+        xhr.setRequestHeader(atob(data[1]), atob(data[2]));
+        xhr.send();
+    } else {
+        return;
+    }
+}
+
+function toggleEnableWallpaper() {
+    if (localStorage.getItem("enable_wallpaper") != 1) {
+        localStorage.setItem("enable_wallpaper", "1");
+    } else {
+        localStorage.removeItem("enable_wallpaper");
+    }
+    applyOptionEnableWallpaper();
+}
+
+function applyOptionEnableWallpaper() {
+    if (localStorage.getItem("enable_wallpaper") == 1) {
+        enableWallpaperMode(document.getElementById("select_wallpaper").value);
+    } else {
+        disableWallpaperMode();
+    }
+}
+
+function selectWallpaper(val) {
+    if (!val.startsWith("aHR0")) {
+        localStorage.setItem("wallpaper", val);
+    }
+    applyOptionEnableWallpaper();
+}
+
+function deleteWallpaperCache() {
+    let x = confirm("Are you sure you want to delete your wallpaper offline cache?");
+    if (x == true) {
+        localStorage.removeItem("wallpaper_cache");
+
+        // Refresh wallpaper
+        document.getElementById("select_wallpaper").value = "cache";
+        applyOptionEnableWallpaper();
+
+        alert("Wallpaper offline cache has been deleted!");
+    }
+}
+
+// WebKit exploit
+
+function setWebkitAddress(value) {
+    let el = document.getElementById("input_webkit_addr");
+    if (value == "custom") {
+        setCustomWebkitAddress(el.value);
+        el.parentElement.style.display = "block";
+    } else {
+        el.parentElement.style.display = "none";
+        if (value == "0x200c00000") { // Default
+            localStorage.removeItem("webkit_addr");
+        } else {
+            localStorage.setItem("webkit_addr", value);
+        }
+    }
+}
+
+function setCustomWebkitAddress(value) {
+    if (value == "0x200c00000" || value == "") { // Default
+        localStorage.removeItem("custom_webkit_addr");
+        localStorage.removeItem("webkit_addr");
+        document.getElementById("input_webkit_addr").value = "0x200c00000";
+    } else {
+        // Make sure the entered number is correct
+        if (isNaN(value)) {
+            alert("The WebKit address you have just entered is not a valid number: \"" + value + "\"\n\nThe address has not been saved.");
+            return;
+        }
+        let pageSize = 0x4000;
+        let addr = new Number(value);
+        let remainder = addr % pageSize;
+        if (remainder) {
+            addr = addr - remainder;
+            value = "0x" + addr.toString(16);
+            document.getElementById("input_webkit_addr").value = value;
+            alert("The entered WebKit address has been rounded down to " + value + ".");
+        }
+
+        localStorage.setItem("custom_webkit_addr", value);
+        localStorage.setItem("webkit_addr", value);
+    }
+}
+
+// Payload style/size
+
+function setPayloadStyle(index) {
+    if (index == 0) { // Default
+        localStorage.removeItem("payload_style");
+    } else {
+        localStorage.setItem("payload_style", index);
+    }
+    applyPayloadStyle();
+}
+
+function applyPayloadStyle() {
+    let payloads = document.getElementsByClassName("payload_link");
+    let payload_style = localStorage.getItem("payload_style");
+    switch (payload_style) {
+        case "1": // Plain text, centered
+            document.getElementsByTagName("footer")[0].style.textAlign = "center";
+            for (let i = 0; i < payloads.length; i++) {
+                payloads[i].classList.remove("payload_style_hybrid", "payload_style_button");
+                payloads[i].classList.add("payload_style_plain");
+            }
+            break;
+        case "2": // Buttons
+            document.getElementsByTagName("footer")[0].style.textAlign = "left";
+            for (let i = 0; i < payloads.length; i++) {
+                payloads[i].classList.remove("payload_style_hybrid", "payload_style_plain");
+                payloads[i].classList.add("payload_style_button");
+            }
+            break;
+        case "3": // Buttons, centered
+            document.getElementsByTagName("footer")[0].style.textAlign = "center";
+            for (let i = 0; i < payloads.length; i++) {
+                payloads[i].classList.remove("payload_style_hybrid", "payload_style_plain");
+                payloads[i].classList.add("payload_style_button");
+            }
+            break;
+        case "4": // Hybrid
+            document.getElementsByTagName("footer")[0].style.textAlign = "left";
+            for (let i = 0; i < payloads.length; i++) {
+                payloads[i].classList.remove("payload_style_button", "payload_style_plain");
+                payloads[i].classList.add("payload_style_hybrid");
+            }
+            break;
+        case "5": // Hybrid, centered
+            document.getElementsByTagName("footer")[0].style.textAlign = "center";
+            for (let i = 0; i < payloads.length; i++) {
+                payloads[i].classList.remove("payload_style_button", "payload_style_plain");
+                payloads[i].classList.add("payload_style_hybrid");
+            }
+            break;
+        default: // Plain text
+            document.getElementsByTagName("footer")[0].style.textAlign = "left";
+            for (let i = 0; i < payloads.length; i++) {
+                payloads[i].classList.remove("payload_style_button", "payload_style_hybrid");
+                payloads[i].classList.add("payload_style_plain");
+            }
+            break;
+    }
+}
+
+function setPayloadSize(value) {
+    if (value == "medium") { // Default
+        localStorage.removeItem("payload_size");
+    } else {
+        localStorage.setItem("payload_size", value);
+    }
+    applyPayloadSize();
+}
+
+function applyPayloadSize() {
+    let payloads = document.getElementsByClassName("payload_link");
+    let payload_size = localStorage.getItem("payload_size");
+    if (!payload_size)
+        payload_size = "medium";
+    for (let i = 0; i < payloads.length; i++)
+        payloads[i].style.fontSize = payload_size;
+}
+
+// GoldHEN
+
+function setGoldHenVersion(value) {
+    if (value == "all") { // Default
+        localStorage.removeItem("goldhen_version");
+    } else {
+        localStorage.setItem("goldhen_version", value);
+    }
+    applyGoldHenVersion();
+}
+
+function applyGoldHenVersion() {
+    let goldhen_version = localStorage.getItem("goldhen_version");
+    let x = document.getElementById("select_goldhen");
+    let a = document.querySelectorAll(".payload_link.goldhen");
+    if (goldhen_version === null) {
+        x.value = "all"; // Default
+        // Show all versions
+        for (let i = 0; i < a.length; i++) {
+            a[i].style.display = "inline-block";
+        }
+    } else {
+        x.value = goldhen_version;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].textContent.split(" ").pop() == goldhen_version) {
+                // Only show the selected version
+                a[i].style.display = "inline-block";
+            } else {
+                // Hide all other versions
+                a[i].style.display = "none";
+            }
+        }
+    }
+}
+
+// GTA 5 Mods
+
+function setGTA5Version(value) {
+    if (value == "all") { // Default
+        localStorage.removeItem("gta5_version");
+    } else {
+        localStorage.setItem("gta5_version", value);
+    }
+    applyGTA5Version();
+}
+
+function applyGTA5Version() {
+    let x = document.getElementById("select_gta5");
+    let gta5_version = localStorage.getItem("gta5_version");
+    let a = document.querySelectorAll(".payload_link.gta5");
+    if (gta5_version === null) {
+        x.value = "all"; // Default
+        // Show all versions
+        for (let i = 0; i < a.length; i++) {
+            a[i].style.display = "inline-block";
+        }
+    } else {
+        x.value = gta5_version;
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].href.includes(gta5_version)) {
+                // Only show the selected version
+                a[i].style.display = "inline-block";
+            } else {
+                // Hide all other versions
+                a[i].style.display = "none";
+            }
+        }
+    }
+}
+
+// Linux
+
+function setLinuxVersion(value) {
+    if (value == "all") { // Default
+        localStorage.removeItem("linux_version");
+    } else {
+        localStorage.setItem("linux_version", value);
+    }
+    applyLinuxVersion();
+}
+
+function applyLinuxVersion() {
+    let linux_version = localStorage.getItem("linux_version");
+    let x = document.getElementById("select_linux");
+    let reg = document.querySelectorAll(".payload_link.ps4_regular");
+    let pro = document.querySelectorAll(".payload_link.ps4_pro");
+
+    if (linux_version === null)
+        x.value = "all"; // Default
+    else
+        x.value = linux_version;
+
+    for (let i = 0; i < reg.length; i++) {
+        switch (linux_version) {
+            case null:
+                reg[i].style.display = "inline-block";
+                pro[i].style.display = "inline-block";
+                break;
+            case "none":
+                reg[i].style.display = "none";
+                pro[i].style.display = "none";
+                break;
+            case "ps4_regular":
+                reg[i].style.display = "inline-block";
+                pro[i].style.display = "none";
+                break;
+            case "ps4_pro":
+                reg[i].style.display = "none";
+                pro[i].style.display = "inline-block";
+                break;
+        }
+    }
+}
+
+
+// Color scheme
+
+function setColorScheme(value) {
+    if (value == "gray") { // Default
+        localStorage.removeItem("color_scheme");
+    } else {
+        localStorage.setItem("color_scheme", value);
+    }
+    applyColorScheme();
+}
+
+function applyColorScheme() {
+    function setColors(background1, background2, highlight, border, text1, text2 = text1) {
+        let x = document.documentElement;
+        x.style.setProperty("--background-color-1", background1);
+        x.style.setProperty("--background-color-2", background2);
+        x.style.setProperty("--highlight-color", highlight);
+        x.style.setProperty("--border-color", border);
+        x.style.setProperty("--text-color-1", text1);
+        x.style.setProperty("--text-color-2", text2);
+        // Scrollbar
+        x = document.getElementById("scrollbar");
+        scrollbar.innerHTML = "::-webkit-scrollbar-thumb{background-color:" + highlight + ";border:1px solid " + border + "}::-webkit-scrollbar-track{background-color:" + background1 + ";border: 1px solid " + border + ";border-style: none none none solid}";
+        // Bodypainting done
+        document.getElementsByTagName("header")[0].style.display = "flex";
+        document.getElementsByTagName("main")[0].style.display = "initial";
+        document.getElementsByTagName("footer")[0].style.display = "initial";
+    }
+
+    let value = localStorage.getItem("color_scheme");
+    switch (value) {
+        // setColors(background1, background2, highlight, border, text1 [, text2])
+        case "cappuccino":
+            setColors("#3A2E2E", "#D6B79F", "sienna", "#816C61", "#F7ECDF", "#4B3832");
+            break;
+        case "dark":
+            setColors("#333333", "#666666", "#444444", "#AAAAAA", "#DDDDDD");
+            break;
+        case "lavender":
+            setColors("lavender", "#F5F5FA", "thistle", "darkorchid", "indigo");
+            break;
+        case "midnightblue":
+            setColors("midnightblue", "royalblue", "tomato", "#A9BBF1", "white");
+            break;
+        case "pink":
+            setColors("#934A70", "#BC7B9C", "#763C59", "#D8B2C5", "#F5ECF1");
+            break;
+        case "rojigualda":
+            setColors("#AA151B", "#F1BF00", "#800F14", "#D7810A", "#F1BF00", "#AA151B");
+            break;
+        case "usa":
+            setColors("#9B1C2C", "#33335F", "#33335F", "#CCC8BF", "#E3DED4");
+            break;
+        case "wheat":
+            setColors("wheat", "#FFFBF2", "burlywood", "saddlebrown", "maroon");
+            break;
+        case "wildberry":
+            setColors("#550000", "#AA3939", "#801515", "#E6C7C7", "#FFDDDD");
+            break;
+        default: // "gray"
+            setColors("#F0F0F0", "white", "#D7D7D7", "gray", "black");
+    }
+}
+
+// Custom payload chains (Settings)
+
+function togglePayloadChainOptions() {
+    showTab("tab_custom_payloads", event);
+}
+
+function saveCustomPayloadCheckbox(id) {
+    id = id.substr(0, 8);
+    if (document.getElementById(id + "_enabled").checked === true) {
+        localStorage.setItem(id + "_enabled", "1");
+    } else {
+        localStorage.removeItem(id + "_enabled");
+    }
+    loadCustomPayload(id);
+}
+
+function saveCustomPayloadTitle(id) {
+    id = id.substr(0, 8);
+    let title = document.getElementById(id + "_title").value;
+    if (title !== "") {
+        localStorage.setItem(id + "_title", title);
+    } else {
+        localStorage.removeItem(id + "_title", title);
+    }
+    loadCustomPayload(id);
+}
+
+function saveCustomPayloadPayloads(id) {
+    id = id.substr(0, 8);
+    let payload_chain = document.getElementById("payload_chain");
+    if (payload_chain.innerHTML != payloadChainDefaultText) {
+        let payloads = payload_chain.innerHTML.split(/[, ]+/);
+        localStorage.setItem(id + "_payloads", JSON.stringify(payloads));
+    }
+    loadCustomPayload(id);
+}
+
+function loadCustomPayload(id) {
+    let customPayloadLink = document.querySelector(".payload_link" + "." + id);
+    // Title
+    let title = localStorage.getItem(id + "_title");
+    if (title !== null) {
+        document.getElementById(id + "_title").value = title;
+    // Link title
+        customPayloadLink.innerHTML = "*" + title;
+    } else {
+        title = "Chain " + id.slice(7);
+        customPayloadLink.innerHTML = "*" + title;
+        document.getElementById(id + "_title").value = title;
+    }
+    // Payloads
+    let payloads = JSON.parse(localStorage.getItem(id + "_payloads"));
+    if (payloads !== null) {
+        document.getElementById(id + "_payloads").value = payloads;
+        // Link href
+        let payloadLink = "javascript:selectPayload('";
+        for (let i = 0; i < payloads.length; i++) {
+            payloadLink += (i == 0 ? "" : ",") + payloads[i];
+        }
+        payloadLink += "')"
+        customPayloadLink.href = payloadLink;
+        // Link mouseover
+        customPayloadLink.onmouseover = function () {
+            showPayloadInfo("Loads " + payloads.join(", ") + ".");
+        };
+    } else {
+        document.getElementById(id + "_payloads").value = null;
+        // Link href
+        customPayloadLink.href = "";
+        // Link mouseover
+        customPayloadLink.onmouseover = "";
+    }
+    // Checkbox
+    let checkbox = document.getElementById(id + "_enabled");
+    checkbox.checked = (localStorage.getItem(id + "_enabled") !== null);
+    // Show/hide link
+    if (checkbox.checked) {
+        customPayloadLink.style.display = "inline-block";
+    } else {
+        customPayloadLink.style.display = "none";
+    }
+    sortPayloads();
+}
+
+function deleteCustomPayloads() {
+    let customPayloadLink;
+    for (let i = 1; i < 4; i++) {
+        localStorage.removeItem("custom_" + i + "_title");
+        localStorage.removeItem("custom_" + i + "_payloads");
+        localStorage.removeItem("custom_" + i + "_enabled");
+        let customPayloadLink = document.querySelector(".payload_link" + "." + "custom_" + i);
+        customPayloadLink.href = "";
+        customPayloadLink.onmouseover = "";
+        loadCustomPayload("custom_" + i);
+    }
+}
+
+// Payloads
+
+function resetPayloadChain() {
+    document.getElementById("payload_chain").innerHTML = payloadChainDefaultText;
+}
+
+var isRecording = false; // Global
+function toggleChainRecording() {
+  isRecording = !isRecording;
+  let payload_chain_area = document.getElementById("payload_chain_area");
+  let payload_chain = document.getElementById("payload_chain");
+  if (isRecording === true) {
+    payload_chain_area.style.display = "flex";
+  } else {
+    hideTabs();
+    payload_chain_area.style.display = "none";
+  }
+  resetPayloadChain();
+}
+
+// Launches one or multiple comma-separated payload files
+function launchPayloads(payloadString) {
+    // Skip BinLoader server
+    if (localStorage.getItem("disable_binloader") != null) {
+        location.href = "jb.html#" + payloadString;
+        return;
+    }
+
+    // Catch accidental double clicks
+    let currentDate = Date.now();
+    if (currentDate - lastPayloadLaunch < 500) {
+        return;
+    } else {
+        lastPayloadLaunch = currentDate;
+    }
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:9090/status");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                let payloads = payloadString.split("#")[1].split(",");
+                for (let i = 0; i < payloads.length; i++) {
+                    let payload = payloads[i];
+
+                   // Handle certain payloads differently
+                    switch (payload) {
+                        case "dumper.bin":
+                        case "history_blocker.bin":
+                        case "web_activator.bin":
+                            if (confirm("\"" + payload + "\" must be loaded via WebKit exploit. Proceed?")) {
+                                location.href = `jb.html#${payload}`;
+                            }
+                            return;
+                    }
+
+                    // Send current payload to BinLoader server
+                    (function(payload) {
+                        let xhr = new XMLHttpRequest();
+                        xhr.responseType = "arraybuffer";
+                        xhr.open("GET", payload);
+                        xhr.onload = function() {
+                            let array = new Uint8Array(this.response);
+                            // Decompress
+                            if (payload.endsWith(".bz2")) {
+                                try {
+                                    array = bzip2.simple(bzip2.array(array));
+                                } catch (error) {
+                                    alert(payload + ": \"" + error + "\"\nPlease report this critical bug at https://github.com/hippie68/hippie68.github.io/issues.");
+                                throw error;
+                                }
+                            }
+                            // Convert .js to .bin
+                            if (payload.endsWith(".js") || payload.endsWith(".js.bz2")) {
+                                let pos1 = array.indexOf("[".charCodeAt(0));
+                                let pos2 = array.indexOf("]".charCodeAt(0));
+                                let code = array.slice(pos1 + 1, pos2);
+                                let decoder = new TextDecoder();
+                                let str = decoder.decode(code);
+                                let strarray = str.split(",");
+                                array = strarray.map(Number);
+                                array = Uint8Array.from(array);
+                            }
+                            // Send
+                            xhr = new XMLHttpRequest();
+                            xhr.open("POST", "http://localhost:9090");
+                            xhr.send(array.buffer);
+                            checkBinLoader();
+                        };
+                        xhr.send();
+                    })(payload);
+                }
+            } else {
+                if (binLoaderOnline) {
+                    if (!confirm("It seems BinLoader server is not online anymore. Press \"OK\" to load the payload(s) via WebKit exploit, \"Cancel\" to abort.")) {
+                        checkBinLoader();
+                        return;
+                    }
+                }
+                // Load payloads via WebKit exploit
+                location.href = "jb.html#" + payloadString;
+            }
+        }
+    };
+    xhr.send();
+}
+
+function launchPayloadChain() {
+    let payload_chain = document.getElementById("payload_chain");
+    if (payload_chain.innerHTML != payloadChainDefaultText) {
+        let payloadString = payload_chain.innerHTML.split(/[, ]+/).join(",");
+        toggleChainRecording();
+        launchPayloads(payloadString);
+    }
+}
+
+function selectPayload(payloadString) {
+    if (isRecording === true) {
+        let payload_chain = document.getElementById("payload_chain");
+        let existingPayloads = payload_chain.innerHTML.split(", ");
+        let newPayloads = payloadString.substring(payloadString.indexOf("#") + 1).split(",");
+        // Add new payloads to the list, one by one
+        for (let i = 0; i < newPayloads.length; i++) {
+            // No duplicates except for Netcat and Mira Loader
+            if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "Netcat" || newPayloads[i] == "mira_loader.bin") {
+                if (payload_chain.innerHTML == payloadChainDefaultText) {
+                    payload_chain.innerHTML = newPayloads[i];
+                } else {
+                    payload_chain.innerHTML += ", " + newPayloads[i];
+                }
+            }
+        }
+    } else {
+        launchPayloads(payloadString);
+    }
+}
+
+function setBinLoaderStatus(is_online, response) {
+    let el = document.getElementById("binloader_status");
+    if (is_online) {
+        let message = "BinLoader server status: " + response.status.toUpperCase();
+        el.style.display = "inline";
+        switch (response.status) {
+            case "ready":
+                message += " – payloads will load instantly";
+                break;
+        }
+        el.innerHTML = message;
+        binLoaderOnline = true;
+    } else {
+        el.style.display = "none";
+        binLoaderOnline = false;
+    }
+}
+
+function checkBinLoader() {
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:9090/status");
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                setBinLoaderStatus(true, JSON.parse(xhr.responseText));
+            } else {
+                setBinLoaderStatus(false);
+            }
+        }
+    }
+    xhr.send();
+}
+
+// Deletes all saved localStorage items and restores websites' default settings
+// Does not delete wallpaper cache nor custom payload chains, as they have separate delete buttons
+function restoreDefaultSettings() {
+    // Backup
+    let wallpaper_cache = localStorage.getItem("wallpaper_cache");
+    let custom_title = [], custom_payloads = []; custom_enabled = [];
+    for (let i = 1; i < 4; i++) {
+        custom_title[i] = localStorage.getItem("custom_" + i + "_title");
+        custom_payloads[i] = localStorage.getItem("custom_" + i + "_payloads");
+        custom_enabled[i] = localStorage.getItem("custom_" + i + "_enabled");
+    }
+
+    // Delete
+    localStorage.clear();
+
+    // Restore
+    localStorage.setItem("wallpaper_cache", wallpaper_cache);
+    for (let i = 1; i < 4; i++) {
+        if (custom_title[i] !== null) { localStorage.setItem("custom_" + i + "_title", custom_title[i]); }
+        if (custom_payloads[i] !== null) { localStorage.setItem("custom_" + i + "_payloads", custom_payloads[i]); }
+        if (custom_enabled[i] !== null)  { localStorage.setItem("custom_" + i + "_enabled", custom_enabled[i]); }
+    }
+
+    initialize();
+}
+
+/* WALLPAPERS
+------------- */
+
+// Loads a wallpaper and displays it
+function loadWallpaper(imageUrl) {
+    if (imageUrl == "cache") {
+        imageUrl = localStorage.getItem("wallpaper_cache");
+        if (imageUrl === null) {
+            disableWallpaperMode();
+            return false;
+        }
+    } else {
+        if (imageUrl.startsWith("aHR0")) {
+            imageUrl = atob(imageUrl);
+        }
+        var image = new Image();
+        image.src = imageUrl;
+        image.onerror = function () {
+            disableWallpaperMode();
+        }
+    }
+    document.body.style.backgroundImage = "url(" + imageUrl + ")";
+    return true;
+}
+
+// Hides various elements/changes their opacity for optimum wallpaper experience, and sets a wallpaper
+function enableWallpaperMode(imageUrl) {
+    if (loadWallpaper(imageUrl) === true) {
+        document.body.style.backgroundSize = "cover";
+        document.querySelector(".credits").style.display = "none";
+        document.getElementById("website").style.opacity = "0.85";
+        document.getElementById("instructions").style.display = "none";
+        document.querySelector("main").style.backgroundColor = "transparent";
+    }
+}
+
+// Removes the wallpaper and resets the website's looks to default
+function disableWallpaperMode() {
+    document.getElementById("instructions").style.display = "block";
+    document.getElementById("website").style.opacity = "1.0";
+    document.querySelector(".credits").style.display = "block";
+    document.body.style.backgroundImage = "none";
+    document.querySelector("main").style.backgroundColor = "var(--background-color-2)";
+}
+
+/* STARTUP
+---------- */
+
+initialize();
+checkForUpdates();
+if (localStorage.getItem("disable_binloader") === null)
+    checkBinLoader();
+</script>
+</body>
+</html>
