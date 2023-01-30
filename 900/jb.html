@@ -30,6 +30,10 @@
     <div id="log_area"></div>
 </div>
 <script>
+// Don't start jailbreaking unless invoked manually.
+if (!sessionStorage.getItem("allow_jailbreak"))
+    location.href = "index.html";
+
 let enable_debug = localStorage.getItem("enable_debug");
 let webkit_addr = localStorage.getItem("webkit_addr");
 if (webkit_addr === null)

@@ -97,6 +97,6 @@ let changes=`2023-01-29:
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-01-29";
-let build="1";
+let date="2023-01-30";
+let build="0";
 let targetFirmware="9.00";

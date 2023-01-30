@@ -1328,6 +1328,9 @@ function toggleChainRecording() {
 
 // Launches one or multiple comma-separated payload files
 function launchPayloads(payloadString) {
+    // Avoid unwanted last-used page automatic jailbreaking (see "jb.html")
+    sessionStorage.setItem("allow_jailbreak", "1");
+
     // Skip BinLoader server
     if (localStorage.getItem("disable_binloader") != null) {
         location.href = "jb.html#" + payloadString;
