@@ -126,7 +126,7 @@ function poc() {
             guf += NPAGES * PAGE_SIZE;
 
         n_loops++;
-        if (n_loops > 200)
+        if (n_loops == 200)
             debugMessage("Running WebKit exploit... (still trying, but the WebKit address may be too far off)");
 
     }

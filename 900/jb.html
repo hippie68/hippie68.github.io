@@ -37,12 +37,13 @@ if (!sessionStorage.getItem("allow_jailbreak"))
 let enable_debug = localStorage.getItem("enable_debug");
 let webkit_addr = localStorage.getItem("webkit_addr");
 if (webkit_addr === null)
-    var GUESS_FONT = 0x200c00000;
+    var GUESS_FONT = 0x200870000; // If changed, values in index.html need to be replaced.
 else
     var GUESS_FONT = parseInt(webkit_addr);
 let test_loop = localStorage.getItem("enable_test_loop");
 let payloadFileNames = document.location.hash.substr(1).split(",");
 let logArea = document.getElementById("log_area");
+let doneTimeout = 30;
 
 // Create info box.
 {
@@ -50,7 +51,7 @@ let logArea = document.getElementById("log_area");
     if (test_loop)
         title.innerHTML = "Now running WebKit address test loop";
     else
-        title.innerHTML = "Now jailbreaking with \"" + payloadFileNames.join(", ") + "\"";
+        title.innerHTML = `Now jailbreaking with "${payloadFileNames.join(", ")}"`;
 
     // Applies a color scheme.
     function setColors(background1, background2, highlight, border, text1, text2 = text1) {
@@ -122,19 +123,27 @@ function runScript(script) {
 }
 
 function done() {
+    debugMessage("");
+
     // Load Web Activator's frontend.
-    if (payloadFileNames.includes("payloads/web_activator.bin")) {
-        runScript("payloads/web_activator_frontend.js");
-    }
+    if (payloadFileNames.includes("web_activator.bin"))
+        runScript("web_activator_frontend.js");
 
     history.pushState({}, "", ".");
     if (localStorage.getItem("disable_youreallset") != 1)
         alert("You're all set!");
+    if (!payloadFileNames.includes("web_activator.bin"))
+        setTimeout(function () { read_ptr_at(0); }, doneTimeout);
+}
 
-    // Only return if Web Activator's frontend is not used.
-    if (!payloadFileNames.includes("payloads/web_activator.bin")) {
-        setTimeout(function () { read_ptr_at(0); }, 1);
-        //location.reload(); // This allows for garbage collection???
+// Display additional info for certain payloads.
+if (payloadFileNames.includes("mira_loader.bin"))
+    logMessage("Mira Loader will be listening on port 9021.");
+if (payloadFileNames.includes("ftp.bin")) {
+    logMessage("The FTP server will be listening on port 1337.");
+    if (payloadFileNames[payloadFileNames.length - 1] != "ftp.bin") {
+        logMessage("When done, please send the custom FTP command \"SHUTDOWN\".");
+        logMessage("(For FileZilla: Server - Enter custom command...)");
     }
 }
 

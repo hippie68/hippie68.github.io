@@ -1,15 +1,16 @@
-let changes=`2023-01-29:
-  - Replaced "Netcat" with Mira Loader (port 9021).
+let changes=`2023-02-04:
+  - Fixed Web Activator frontend not loading.
+  - Fixed Mira & Linux not loading when the "You're all set" message is disabled.
+  - Less "out of memory" errors when consecutively loading payloads.
+  - Other minor improvements.
+2023-01-29:
+  - Replaced "Netcat" with Mira loader (port 9021).
   - Chained payloads now run in correct sequence, one at a time.
   - The website now has a flat file structure to support the SPIFFS file system
     used by ESP boards.
   - Default payloads are now fully customizable by editing "payloads.js".
 2023-01-22:
-  - Implemented customizable WebKit exploit address:
-    Using a test loop, you can tweak the address to increase the WebKit exploit
-    execution speed. In the debug output "nn -> nnnn -> 0xnnnnnnnnn", the first
-    number indicates how well the address has been guessed (the lower, the better).
-    But don't set the address too high, or the WebKit exploit won't finish.
+  - Implemented customizable WebKit exploit address.
     Before trying to find a better address, run the payload "Disable ASLR" once.
   - New option: WebKit address test loop.
 2023-01-21:
@@ -97,6 +98,6 @@ let changes=`2023-01-29:
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-01-30";
-let build="0";
+let date="2023-02-04";
+let build="1";
 let targetFirmware="9.00";
