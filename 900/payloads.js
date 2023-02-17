@@ -1,16 +1,19 @@
-// This file controls the website's default payloads. It may get changed by
-// website updates. If you just want to add more payloads, edit "custom.js"
-// instead.
-// Self-hosters: For a fresh start, you can remove all payload entries and
-// payload files, but you may want to keep the file (not the entry)
-// "mira_loader.bin", to be able to load Linux payloads.
+/*
+This file controls the website's default payloads. It may be changed by future
+website updates. If you just want to add more payloads, edit "custom.js"
+instead.
+
+For a fresh start, you can remove all payload entries below and corresponding
+payload files, but to be able to load Linux payloads you may want to keep the
+file (not the entry) "mira_loader.bin".
+*/
 
 addPayload("app2usb.bin", "App2USB", "Can be used to install PKGs on an exFAT-formatted USB storage device. Temporarily you need enough space on the internal HDD.");
 addPayload("backup.bin", "Backup", "Backups databases and all save games to a USB storage device. Can only be restored on the current internal HDD setup, as the files are encrypted.");
 addPayload("disable_aslr.bin", "Disable ASLR", "Temporarily disables the ASLR (Address Space Layout Randomization) until the next reboot, to make working with memory easier/repeatable. For developers.");
 addPayload("disable_updates.bin", "Disable Updates", "Creates dummy directories, which survive a reboot but not a crash, in /update on the internal HDD, preventing the PS4 from starting firmware updates. Note: HEN payloads do this automatically.");
 addPayload("dumper.bin", "Dumper", "Start a game, then load the Dumper payload to extract the game and its update to an exFAT-formatted USB storage device. Make sure not to have important data on it.");
-addPayload("enable_udpates.bin", "Enable Updates", "Removes the directories created by the Disable Updates payload to enable firmware updates once again.");
+addPayload("enable_updates.bin", "Enable Updates", "Removes the directories created by the Disable Updates payload to enable firmware updates once again.");
 addPayload("fakeusb.bin", "FakeUSB", "If your USB drive is too small to install PKGs from, copy the PKGs via FTP to /user/home/fakeusb, plug in your USB drive, and start the FakeUSB payload. Then install PKGs as usual via Debug Settings.");
 addPayload("ftp.bin", "FTP (port 1337)", "Starts an improved FTP server that listens on port 1337. On a computer, you can run an FTP client to access the PS4 file tree. Supports custom FTP commands DECRYPT, MTRW, MTPROC, and SHUTDOWN.");
 addPayload("goldhen_v2.1.2.bin", "GoldHEN 2.1.2", "Enables homebrew and Debug Settings. Ignores firmware checks to run the latest backports, supports remote package install and Rest Mode. A new PS4 menu entry, \"Settings - *GoldHEN*\", will appear.", "goldhen");

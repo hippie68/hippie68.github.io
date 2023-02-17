@@ -1350,7 +1350,7 @@ function launchPayloads(payloadString) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
             if (xhr.status == 200) {
-                let payloads = payloadString.split("#")[1].split(",");
+                let payloads = payloadString.split(",");
                 for (let i = 0; i < payloads.length; i++) {
                     let payload = payloads[i];
 
@@ -1360,7 +1360,9 @@ function launchPayloads(payloadString) {
                         case "history_blocker.bin":
                         case "web_activator.bin":
                             if (confirm("\"" + payload + "\" must be loaded via WebKit exploit. Proceed?")) {
-                                location.href = `jb.html#${payload}`;
+                                while (i--)
+                                    payloads.shift();
+                                location.href = "jb.html#" + payloads;
                             }
                             return;
                     }
@@ -1371,6 +1373,10 @@ function launchPayloads(payloadString) {
                         xhr.responseType = "arraybuffer";
                         xhr.open("GET", payload);
                         xhr.onload = function() {
+                            if (this.status == 404) {
+                                alert(`File not found: "${payload}"`);
+                                return;
+                            }
                             let array = new Uint8Array(this.response);
                             // Decompress
                             if (payload.endsWith(".bz2")) {

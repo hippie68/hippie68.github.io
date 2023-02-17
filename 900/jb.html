@@ -122,7 +122,120 @@ function runScript(script) {
     }
 }
 
-function done() {
+// Poor man's memcpy().
+function memcpy(destination, source, num) {
+    let remainder = num % 8;
+    for (let i = 0; i < num - remainder; i += 8)
+        p.write8(destination.add32(i), p.read8(source.add32(i)));
+    for (let i = num - remainder; i < num; i++)
+        p.write1(destination.add32(i), p.read1(source.add32(i)));
+}
+
+// Runs payloads, one by one.
+function runPayloads() {
+    // Writes a payload file into memory and returns address and size.
+    function createPayloadBuffer(payloadFileName) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", payloadFileName, false);
+        xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        xhr.send();
+        if (xhr.status == 404)
+            throw(`File not found: "${payloadFileName}"`);
+        let array = Uint8Array.from(xhr.response, c => c.charCodeAt(0));
+        xhr = null;
+
+        // Decompress .bz2 files.
+        if (payloadFileName.endsWith(".bz2")) {
+            debugMessage(`Decompressing "${payloadFileName}"...`);
+            try {
+                array = bzip2.simple(bzip2.array(array));
+            } catch (error) {
+                alert(`${payloadFileName}: ${error}\nPlease report this critical bug at https://github.com/hippie68/hippie68.github.io/issues.`);
+                throw error;
+            }
+        }
+
+        // Convert .js to .bin.
+        if (payloadFileName.endsWith(".js") || payloadFileName.endsWith(".js.bz2")) {
+            debugMessage(`Converting "${payloadFileName}" to binary format...`);
+            let pos1 = array.indexOf("[".charCodeAt(0));
+            let pos2 = array.indexOf("]".charCodeAt(0));
+            let code = array.slice(pos1 + 1, pos2);
+            let decoder = new TextDecoder();
+            let str = decoder.decode(code);
+            let strarray = str.split(",");
+            array = strarray.map(Number);
+            array = Uint8Array.from(array);
+        }
+
+        // Assemble payload buffer.
+        debugMessage(`Writing "${payloadFileName}" to memory...`);
+        let payloadBuffer = chain.syscall(477, 0x0, array.buffer.byteLength, 0x7, 0x1000, 0xFFFFFFFF, 0x0);
+        let arrayBuffer = p.read8(p.leakval(array).add32(0x10));
+        memcpy(payloadBuffer, arrayBuffer, array.buffer.byteLength);
+        chain.syscall(203, payloadBuffer, array.buffer.byteLength, 0x0);
+
+        return {
+            address: payloadBuffer,
+            size: array.buffer.byteLength
+        };
+    }
+
+    for (let i = 0; i < payloadFileNames.length; i++) {
+        let payloadFileName = payloadFileNames[i];
+
+        if (payloadFileName == "mira.bin" || payloadFileName.toLowerCase().includes("linux")) {
+            // Load Mira loader in the background.
+            let loaderBuffer = createPayloadBuffer("mira_loader.bin");
+            let pthread = p.malloc(0x10);
+            chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, loaderBuffer.address, 0x0);
+
+            // Create a socket file descriptor.
+            let sockfd = chain.syscall(97, 0x2, 0x1, 0x0).low;
+            if (sockfd < 0) {
+                alert(`Failed to create socket: "${sockfd}"`);
+                break;
+            }
+
+            // Create struct sockaddr_in.
+            let sockaddr_in = chain.syscall(477, 0x0, 0x10, 0x7, 0x1000, 0xFFFFFFFF, 0x0);
+            let sockaddr_in_data = p.array_from_address(sockaddr_in, 4);
+            sockaddr_in_data[0] = 0x3d230210; // .sin_port: 9021, .sin_family: AF_INET, .sin_len: 16
+            sockaddr_in_data[1] = 0x0100007f; // .sin_addr: 127.0.0.1
+            sockaddr_in_data[2] = 0x00000000;
+            sockaddr_in_data[3] = 0x00000000;
+
+            // Connect to socket.
+            let ret = chain.syscall(98, sockfd, sockaddr_in, 0x10).low;
+            if (ret) {
+                alert(`Could not connect to Mira loader: ${ret}`);
+                chain.syscall(6, sockfd);
+                break;
+            }
+
+            // Send payload to Mira loader.
+            let payloadBuffer = createPayloadBuffer(payloadFileName);
+            ret = chain.syscall(4, sockfd, payloadBuffer.address, payloadBuffer.size).low;
+            if (ret < 0)
+                alert(`"${payloadFileName}" could not be sent.`);
+            else if (ret != payloadBuffer.size)
+                alert(`"${payloadFileName}": only ${ret} out of ${payloadBuffer.size} bytes could be sent.`);
+            else
+                doneTimeout = 5000; // Payload runs in a thread and needs more time to execute.
+            chain.fcall(window.syscalls[6], sockfd);
+            chain.fcall(window.syscalls[73], sockaddr_in, 0x10);
+            chain.fcall(window.syscalls[73], payloadBuffer.address, payloadBuffer.size);
+            chain.run();
+            break;
+        } else {
+            let payloadBuffer = createPayloadBuffer(payloadFileName);
+            debugMessage(`Running "${payloadFileName}"...`);
+            chain.fcall(payloadBuffer.address, 0x0);
+            chain.fcall(window.syscalls[73], payloadBuffer.address, payloadBuffer.size);
+            chain.run();
+        }
+    }
+
     debugMessage("");
 
     // Load Web Activator's frontend.

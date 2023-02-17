@@ -1,4 +1,7 @@
-let changes=`2023-02-04:
+let changes=`2023-02-16:
+  - Fixed payloads not being sent to BinLoader server.
+  - Fixed Enable Updates not loading.
+2023-02-04:
   - Fixed Web Activator frontend not loading.
   - Fixed Mira & Linux not loading when the "You're all set" message is disabled.
   - Less "out of memory" errors when consecutively loading payloads.
@@ -98,6 +101,6 @@ let changes=`2023-02-04:
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-02-04";
+let date="2023-02-17";
 let build="1";
 let targetFirmware="9.00";
