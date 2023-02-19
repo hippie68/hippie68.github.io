@@ -59,8 +59,19 @@ function makeUI()
     {
         var tr = document.createElement('tr');
         tbl.appendChild(tr);
-        var username = document.createElement('td');
-        tr.appendChild(username);
+        var tdUsername = document.createElement('td');
+        tdUsername.style.position = 'relative';
+        tr.appendChild(tdUsername);
+        var username = document.createElement('span');
+        tdUsername.append(username);
+        var username_btn = document.createElement('button');
+        username_btn.style.position = 'absolute';
+        username_btn.style.top = '0';
+        username_btn.style.left = '0';
+        username_btn.style.width = '100%';
+        username_btn.style.height = '100%';
+        username_btn.style.opacity = '0';
+        tdUsername.append(username_btn);
         var tdId = document.createElement('td');
         tr.appendChild(tdId);
         var id = document.createElement('input');
@@ -69,14 +80,23 @@ function makeUI()
         tr.appendChild(tdBase64);
         var base64 = document.createElement('input');
         base64.readOnly = true;
+        base64.disabled = true;
         tdBase64.appendChild(base64);
         var tdButton = document.createElement('td');
         tr.appendChild(tdButton);
         var button = document.createElement('button');
         tdButton.appendChild(button);
         button.appendChild(document.createTextNode('Set & Activate'));
-        fields.push({username: username, id: id, base64: base64, button: button});
+        fields.push({username: username, username_btn: username_btn, id: id, base64: base64, button: button});
     }
+
+    // Added by hippie68
+    var exitButton = document.createElement('button');
+    root.appendChild(exitButton);
+    exitButton.onclick = function () { location.reload(); };
+    exitButton.appendChild(document.createTextNode('Click here to return'));
+    sessionStorage.setItem("webkit_reset_required", "1");
+
     document.body.appendChild(root);
     return fields;
 }
@@ -173,6 +193,6 @@ fetchAccounts();
 
 for(var i = 0; i < 16; i++)
 {
-    ui[i].username.onclick = setRandomID.bind(window, i);
+    ui[i].username_btn.onclick = setRandomID.bind(window, i);
     ui[i].button.onclick = activateAccount.bind(window, i);
 }

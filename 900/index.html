@@ -1328,6 +1328,12 @@ function toggleChainRecording() {
 
 // Launches one or multiple comma-separated payload files
 function launchPayloads(payloadString) {
+    // Make sure the WebKit exploit is able to run
+    if (sessionStorage.getItem("webkit_reset_required")) {
+        alert("It seems you recently used Web Activator and the browser needs a fresh start.\nPlease close/open the browser by pressing the PS button and then X.");
+        return;
+    }
+
     // Avoid unwanted last-used page automatic jailbreaking (see "jb.html")
     sessionStorage.setItem("allow_jailbreak", "1");
 

@@ -184,8 +184,8 @@ function runPayloads() {
     for (let i = 0; i < payloadFileNames.length; i++) {
         let payloadFileName = payloadFileNames[i];
 
-        if (payloadFileName == "mira.bin" || payloadFileName.toLowerCase().includes("linux")) {
-            // Load Mira loader in the background.
+        if (payloadFileName == "mira.bin" || payloadFileName == "web_activator.bin" || payloadFileName.toLowerCase().includes("linux")) {
+           // Load Mira loader in the background.
             let loaderBuffer = createPayloadBuffer("mira_loader.bin");
             let pthread = p.malloc(0x10);
             chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, loaderBuffer.address, 0x0);
@@ -237,16 +237,17 @@ function runPayloads() {
     }
 
     debugMessage("");
-
-    // Load Web Activator's frontend.
-    if (payloadFileNames.includes("web_activator.bin"))
-        runScript("web_activator_frontend.js");
-
     history.pushState({}, "", ".");
-    if (localStorage.getItem("disable_youreallset") != 1)
-        alert("You're all set!");
-    if (!payloadFileNames.includes("web_activator.bin"))
-        setTimeout(function () { read_ptr_at(0); }, doneTimeout);
+    setTimeout(function () {
+        if (localStorage.getItem("disable_youreallset") != 1)
+            alert("You're all set!");
+        if (payloadFileNames.includes("web_activator.bin")) {
+            runScript("web_activator_rop.js");
+            runScript("web_activator_frontend.js");
+        } else {
+            read_ptr_at(0);
+        }
+    }, doneTimeout);
 }
 
 // Display additional info for certain payloads.

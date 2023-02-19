@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# random: 4e7769176506eb8d1c589e70419c7b14
+# random: 6d169d5ae025054b9dc0fb77f5120a68
 
 CACHE:
 app2usb.bin
@@ -40,6 +40,7 @@ rop.js
 todex.bin
 web_activator.bin
 web_activator_frontend.js
+web_activator_rop.js
 webkit.js
 webrte.bin
 
