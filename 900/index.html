@@ -361,8 +361,8 @@
                 <li>Loading a GoldHEN or Mira payload unlocks installed homebrew applications and enables "Debug Settings": Leave the browser and go to "Settings - *Debug Settings - Game - Package Installer" to install homebrew PKG files from the root folder of an exFAT-formatted USB storage device. <b>Do not ever go into "*Debug Settings - System - IDU Mode", or your PS4 will brick!</b></li>
                 <li>Current GoldHEN payloads by default hide the Debug Settings and instead create a GoldHEN icon in the home screen's function area.</li>
                 <li>For GoldHEN's Rest Mode support to work, make sure to enable "Keep Application Suspended" in "Settings - Power Save Settings - See Features Available in Rest Mode".</li>
-                <li>You can send additional payload files from a computer: First, load the "Mira Loader" payload. Then, on your computer, use a Netcat program to send your payload files to the PS4.</li>
-                <li>Some payloads loaded via WebKit exploit continue to run inside the browser window. To leave the browser while keeping them alive, use the PS button.</li>
+                <li>You can send additional payload files from a computer: First, load the "JBC Loader" or "Mira Loader" payload. Then, on your computer, use a Netcat program to send your payload files to the PS4.</li>
+                <li>Some payloads loaded via WebKit exploit continue to run inside the browser window. To leave or reopen the browser while keeping them alive, use the PS button.</li>
                 <li>GoldHEN 2.x's BinLoader server, found outside the browser in "Settings - *GoldHEN*", activates instant payload loading. This website feature only works if the website is self-hosted via HTTP. It will not be available when using HTTPS or hippie68.github.io. Please take care not to load the same payload twice while the payload is still running.</li>
             <ul>
         </div>
@@ -475,6 +475,15 @@
                         <div style="display: none">
                             <input type="text" id="input_webkit_addr" onchange="setCustomWebkitAddress(this.value)" style="width: 115px"><br>
                         </div>
+                        <label for="select_payload_loader">Payload loader:</label>
+                        <select id="select_payload_loader" onchange="setPayloadLoader(this.value)">
+                            <option value="jbc_loader">JBC loader (default)</option>
+                            <option value="mira_loader">Mira loader</option>
+                            <option value="no_loader">Do not use a loader*</option>
+                        </select><br>
+                        <div style="display:none">
+                            <label id="payload_loader_warning">*May not work for all payloads</label>
+                        </div>
                     </div>
                     <div style="height: 16px"></div>
                     <!-- Miscellaneous settings -->
@@ -563,7 +572,7 @@
                 <a class="payload_link multi" href="javascript:toggleChainRecording()" onmouseover="showPayloadInfo('multiplepayloads')">Multiple payloads...</a>
             </div>
         </div>
-        <div class="credits">Credits: sleirsgoevy (WebKit exploit and Web Activator), ChendoChap (kernel exploit), Google Project Zero (WebKit vulnerability), M A 7 (ideas), SiSTRo (GoldHEN), OSM (Orbis Toolbox), ctn123 (PS4Debug), the psxita team (Linux payloads), david1337hax (GTA 5 Lamance), LushModz (GTA 5 Expulsion), Al-Azif (Mira and her payload collection).</div>
+        <div class="credits">Credits: sleirsgoevy (WebKit exploit, JBC Loader, Web Activator), ChendoChap (kernel exploit), Google Project Zero (WebKit vulnerability), M A 7 (ideas), SiSTRo (GoldHEN), OSM (Orbis Toolbox), ctn123 (PS4Debug), the psxita team (Linux payloads), david1337hax (GTA 5 Lamance), LushModz (GTA 5 Expulsion), Al-Azif (Mira and her payload collection).</div>
         <div style="display: flex; justify-content: center">
             <span id="binloader_status"></span>
         </div>
@@ -699,35 +708,39 @@ function initialize() {
 
         // Set WebKit exploit custom address input text
         val = localStorage.getItem("custom_webkit_addr");
-        if (val === null) {
+        if (val === null)
             document.getElementById("input_webkit_addr").value = "0x200870000"; // Default
-        } else {
+        else
             document.getElementById("input_webkit_addr").value = val;
-        }
+
+        // Set payload loader dropdown menu
+        val = localStorage.getItem("payload_loader");
+        if (val === null)
+            document.getElementById("select_payload_loader").value = "jbc_loader"; // Default
+        else
+            document.getElementById("select_payload_loader").value = val;
+        applyPayloadLoaderWarning(val);
 
         // Set payload style dropdown menu
         index = localStorage.getItem("payload_style");
-        if (index === null) {
+        if (index === null)
             document.getElementById("select_payload_style").selectedIndex = 0; // Default
-        } else {
+        else
             document.getElementById("select_payload_style").selectedIndex = index;
-        }
 
         // Set payload size dropdown menu
         val = localStorage.getItem("payload_size");
-        if (val === null) {
+        if (val === null)
             document.getElementById("select_payload_size").value = "medium"; // Default
-        } else {
+        else
             document.getElementById("select_payload_size").value = val;
-        }
 
         // Set color scheme dropdown menu
         val = localStorage.getItem("color_scheme");
-        if (val === null) {
+        if (val === null)
             document.getElementById("select_color_scheme").value = "gray"; // Default
-        } else {
+        else
             document.getElementById("select_color_scheme").value = val;
-        }
     }
 }
 
@@ -950,6 +963,24 @@ function setCustomWebkitAddress(value) {
         localStorage.setItem("custom_webkit_addr", value);
         localStorage.setItem("webkit_addr", value);
     }
+}
+
+// Payload loader
+
+function setPayloadLoader(value) {
+    if (value == "jbc_loader") // Default
+        localStorage.removeItem("payload_loader");
+    else
+        localStorage.setItem("payload_loader", value);
+    applyPayloadLoaderWarning(value);
+}
+
+function applyPayloadLoaderWarning(value) {
+    let el = document.getElementById("payload_loader_warning");
+    if (value == "no_loader")
+        el.parentElement.style.display = "block";
+    else
+        el.parentElement.style.display = "none";
 }
 
 // Payload style/size
@@ -1445,7 +1476,7 @@ function selectPayload(payloadString) {
         // Add new payloads to the list, one by one
         for (let i = 0; i < newPayloads.length; i++) {
             // No duplicates except for Netcat and Mira Loader
-            if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "Netcat" || newPayloads[i] == "mira_loader.bin") {
+            if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "jbc_loader.bin" || newPayloads[i] == "mira_loader.bin") {
                 if (payload_chain.innerHTML == payloadChainDefaultText) {
                     payload_chain.innerHTML = newPayloads[i];
                 } else {

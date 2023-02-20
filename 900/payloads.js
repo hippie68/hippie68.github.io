@@ -4,8 +4,8 @@ website updates. If you just want to add more payloads, edit "custom.js"
 instead.
 
 For a fresh start, you can remove all payload entries below and corresponding
-payload files, but to be able to load Linux payloads you may want to keep the
-file (not the entry) "mira_loader.bin".
+payload files, but you need to keep the files (not the entries) "jbc_loader.bin"
+and "mira_loader.bin".
 */
 
 addPayload("app2usb.bin", "App2USB", "Can be used to install PKGs on an exFAT-formatted USB storage device. Temporarily you need enough space on the internal HDD.");
@@ -21,6 +21,7 @@ addPayload("goldhen_v2.3.bin", "GoldHEN 2.3", "Enables homebrew. Ignores firmwar
 addPayload("gta5_expulsion_b4_v1.38.bin.bz2", "GTA 5 Expulsion Beta 4 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing L1 + Square. Only works with the stated game version.", "gta5");
 addPayload("gta5_lamance_1.00_v1.38.bin.bz2", "GTA 5 Lamance 1.00 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing D-pad right + Square. Only works with the stated game version.", "gta5");
 addPayload("history_blocker.bin", "History Blocker", "Normally, the PS4 browser automatically loads the last used page. This payload turns that feature off/on.");
+addPayload("jbc_loader.bin", "JBC Loader", "New payload loader by sleirsgoevy. Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\".");
 addPayload("linux_1gb.bin", "Linux (1 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 7 GB of RAM, as 1 GB will be used for graphics. Use this payload to install Linux.", "ps4_regular");
 addPayload("linux_2gb.bin", "Linux (2 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 6 GB of RAM, as 2 GB will be used for graphics. Do not use this payload during Linux installation.", "ps4_regular");
 addPayload("linux_3gb.bin", "Linux (3 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 5 GB of RAM, as 3 GB will be used for graphics. Do not use this payload during Linux installation.", "ps4_regular");
@@ -30,7 +31,7 @@ addPayload("linux_2gb_pro.bin", "Linux PS4 Pro (2 GB)", "Loads Linux from a prep
 addPayload("linux_3gb_pro.bin", "Linux PS4 Pro (3 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 5 GB of RAM, as 3 GB will be used for graphics. Do not use this payload during Linux installation.", "ps4_pro");
 addPayload("linux_4gb_pro.bin", "Linux PS4 Pro (4 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 4 GB of RAM, as 4 GB will be used for graphics. Do not use this payload during Linux installation.", "ps4_pro");
 addPayload("mira.bin", "Mira", "Enables homebrew and Debug Settings. Might not work with some of the latest backports.");
-addPayload("mira_loader.bin", "Mira Loader", "Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\".");
+addPayload("mira_loader.bin", "Mira Loader", "Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\". Required to load Mira.");
 addPayload("orbis_toolbox.bin.bz2", "Orbis Toolbox", "Modifies the PS4 UI to help with launching and developing homebrew. A new PS4 menu entry, \"Settings - *Orbis Toolbox\", will appear.");
 addPayload("ps4debug.bin", "PS4Debug", "A debugger for the PS4. Required by some PC applications, e.g. Save Mounter and Offline Account Activator.");
 addPayload("restore.bin", "Restore", "Restores a backup done earlier by the Backup payload.");
