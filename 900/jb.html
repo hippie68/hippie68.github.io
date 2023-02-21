@@ -187,7 +187,7 @@ function runPayloads() {
 
         let payloadLoaderFilename;
         if (payloadFilename == "mira.bin") {
-            paylodLoaderFilename = "mira_loader.bin";
+            payloadLoaderFilename = "mira_loader.bin";
         } else {
             switch (payload_loader) {
                 case null:
@@ -198,14 +198,12 @@ function runPayloads() {
                     payloadLoaderFilename = "mira_loader.bin";
                     break;
                 case "no_loader":
+                    if (payloadFilename == "web_activator.bin")
+                        payloadLoaderFilename = "jbc_loader.bin";
+                    else if (payloadFilename.toLowerCase().includes("linux"))
+                        payloadLoaderFilename = "mira_loader.bin";
                     break;
             }
-        }
-        if (!payloadLoaderFilename) {
-            if (payloadFilename == "web_activator.bin")
-                payloadLoaderFilename = "jbc_loader.bin";
-            else if (payloadFilename.toLowerCase().includes("linux"))
-                payloadLoaderFilename = "mira_loader.bin";
         }
 
         if (payloadLoaderFilename) {
@@ -289,8 +287,10 @@ function runPayloads() {
 }
 
 // Display additional info for certain payloads.
+if (payloadFilenames.includes("jbc_loader.bin"))
+    logMessage("JBC loader will be listening on port 9021.");
 if (payloadFilenames.includes("mira_loader.bin"))
-    logMessage("Mira Loader will be listening on port 9021.");
+    logMessage("Mira loader will be listening on port 9021.");
 if (payloadFilenames.includes("ftp.bin")) {
     logMessage("The FTP server will be listening on port 1337.");
     if (payloadFilenames[payloadFilenames.length - 1] != "ftp.bin") {

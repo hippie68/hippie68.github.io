@@ -1475,7 +1475,7 @@ function selectPayload(payloadString) {
         let newPayloads = payloadString.substring(payloadString.indexOf("#") + 1).split(",");
         // Add new payloads to the list, one by one
         for (let i = 0; i < newPayloads.length; i++) {
-            // No duplicates except for Netcat and Mira Loader
+            // No duplicates except for payload loaders
             if (existingPayloads.includes(newPayloads[i]) === false || newPayloads[i] == "jbc_loader.bin" || newPayloads[i] == "mira_loader.bin") {
                 if (payload_chain.innerHTML == payloadChainDefaultText) {
                     payload_chain.innerHTML = newPayloads[i];
