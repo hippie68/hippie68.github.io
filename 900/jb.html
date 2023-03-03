@@ -188,7 +188,7 @@ function runPayloads() {
         let payloadLoaderFilename;
         if (payloadFilename == "mira.bin") {
             payloadLoaderFilename = "mira_loader.bin";
-        } else {
+        } else if (payloadFilename != "jbc_loader.bin" && payloadFilename != "mira_loader.bin") {
             switch (payload_loader) {
                 case null:
                 case "jbc_loader":

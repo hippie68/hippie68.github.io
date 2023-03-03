@@ -32,7 +32,7 @@ addPayload("linux_3gb_pro.bin", "Linux PS4 Pro (3 GB)", "Loads Linux from a prep
 addPayload("linux_4gb_pro.bin", "Linux PS4 Pro (4 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 4 GB of RAM, as 4 GB will be used for graphics. Do not use this payload during Linux installation.", "ps4_pro");
 addPayload("mira.bin", "Mira", "Enables homebrew and Debug Settings. Might not work with some of the latest backports.");
 addPayload("mira_loader.bin", "Mira Loader", "Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\". Required to load Mira.");
-addPayload("orbis_toolbox.bin.bz2", "Orbis Toolbox", "Modifies the PS4 UI to help with launching and developing homebrew. A new PS4 menu entry, \"Settings - *Orbis Toolbox\", will appear.");
+addPayload("orbis_toolbox.bin.bz2", "Orbis Toolbox", "Modifies the PS4 UI to help with launching and developing homebrew. A new PS4 menu entry, \"Settings - *Orbis Toolbox\", will appear. Note: now abandoned; may crash during Rest Mode.");
 addPayload("ps4debug.bin", "PS4Debug", "A debugger for the PS4. Required by some PC applications, e.g. Save Mounter and Offline Account Activator.");
 addPayload("restore.bin", "Restore", "Restores a backup done earlier by the Backup payload.");
 addPayload("todex.bin", "ToDEX", "Spoofs the Target ID to 0x82 (DEX) to identify as a PS4 TestKit. Useful if you want to use Debug Trophies. The spoof is not permanent.");

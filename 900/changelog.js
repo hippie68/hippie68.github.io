@@ -1,4 +1,5 @@
-let changes=`2023-02-20:
+let changes=`2023-03-03: Fixed JBC/Mira loader standalone payloads not loading.
+2023-02-20:
   - Added JBC loader payload.
   - New jailbreak setting: selectable payload loader.
 2023-02-19: More Web Activator bug fixes.
@@ -105,6 +106,6 @@ let changes=`2023-02-20:
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-02-21";
+let date="2023-03-03";
 let build="1";
 let targetFirmware="9.00";

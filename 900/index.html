@@ -494,14 +494,12 @@
                         <label for="select_goldhen">GoldHEN version:</label>
                         <select id="select_goldhen" onchange="setGoldHenVersion(this.value)">
                             <option value="all">Show all</option>
-                            <option value="2.1.2">2.1.2</option>
-                            <option value="2.3">2.3</option>
+                            <option value="none">Show none</option>
                         </select><br>
                         <label for="select_gta5">GTA 5 version:</label>
                         <select id="select_gta5" onchange="setGTA5Version(this.value)">
                             <option value="all">Show all</option>
                             <option value="none">Show none</option>
-                            <option value="v1.38">1.38</option>
                         </select><br>
                         <label for="select_linux">Linux version:</label>
                         <select id="select_linux" onchange="setLinuxVersion(this.value)">
@@ -579,6 +577,15 @@
     </footer>
 <script src="bzip2.js"></script>
 <script>
+// Adds user-defined offline wallpapers from file custom.js, for self-hosting
+function addWallpaper(filename, title) {
+    let o = document.createElement("option");
+    o.value = filename;
+    o.innerHTML = "*" + title;
+    document.querySelector("#select_wallpaper").append(o);
+}
+
+// Sorts user-defined offline wallpaper entries
 function sortWallpapers() {
     let list = document.querySelectorAll("#select_wallpaper option:not(.offline_cache)");
     let array = Array.prototype.slice.call(list, 0);
@@ -589,15 +596,60 @@ function sortWallpapers() {
     }
 }
 
-// Adds user-defined offline wallpapers from file custom.js, for self-hosting
-function addWallpaper(fileName, title) {
-    let o = document.createElement("option");
-    o.value = fileName;
-    o.innerHTML = "*" + title;
-    document.querySelector("#select_wallpaper").append(o);
-    sortWallpapers();
+// Adds payloads from files payloads.js and custom.js
+function addPayload(filename, title, description, tag) {
+    // Create payload links
+    let a = document.createElement("a");
+    a.className = "payload_link";
+    if (tag)
+        a.className += " " + tag;
+    a.href = "javascript:selectPayload('" + filename + "')";
+    a.innerHTML = title;
+    if (!description)
+        description = "Loads \"" + filename + "\".";
+    a.onmouseover = function() { showPayloadInfo(description); };
+    document.querySelector(".payloadlist").append(a);
+
+    // Create GoldHEN/GTA 5 settings entries...
+    if (tag) {
+        let select = document.getElementById("select_" + tag);
+        if (!select)
+            return;
+
+        let version;
+        switch (tag) {
+            case "goldhen":
+                version = title.match(/\d?\d\.\d(\.\d)?(b\d)?/);
+                if (version)
+                    version = version[0];
+                break;
+            case "gta5":
+                version = title.match(/(\d\.\d\d)[^\d]+$/);
+                if (version)
+                    version = version[version.length - 1]; // Rightmost value is game version
+                break;
+            default:
+                return;
+        }
+        if (version === null) {
+            alert(`Error in payload.js or custom.js: missing version number for\n'addPayload("${filename}", "${title}", ...);'.\nPlease add a version number to the TITLE argument.`);
+            return;
+        }
+
+        // ... unless they already exist
+        for (let i = 0; i < select.length; i++) {
+            if (select.options[i].value == version)
+                return;
+        }
+
+        let option = document.createElement("option");
+        option.value = version;
+        option.innerHTML = version;
+        select.appendChild(option);
+    }
 }
 
+// Sorts payloads
 function sortPayloads() {
     let list = document.querySelectorAll(".payload_link:not(.multi)");
     let array = Array.prototype.slice.call(list, 0);
@@ -607,27 +659,14 @@ function sortPayloads() {
         list.prepend(array[i]);
     }
 }
-
-// Adds payloads from files payloads.js and custom.js
-function addPayload(fileName, title, description, tag) {
-    let a = document.createElement("a");
-    a.className = "payload_link";
-    if (tag)
-        a.className += " " + tag;
-    a.href = "javascript:selectPayload('" + fileName + "')";
-    a.innerHTML = title;
-    if (!description)
-        description = "Loads \"" + fileName + "\".";
-    a.onmouseover = function() { showPayloadInfo(description); };
-    document.querySelector(".payloadlist").append(a);
-    sortPayloads();
-}
 </script>
 <script src="payloads.js"></script>
 <script src="custom.js"></script>
 <script>
 /* INITIALIZATION
    -------------- */
+sortPayloads();
+sortWallpapers();
 
 const payloadChainDefaultText = "Click on a payload to add it to the list.";
 var binLoaderOnline = false;
@@ -752,7 +791,6 @@ function initialize() {
 function showPayloadInfo(tag) {
     let text;
     switch (tag) {
-        //case "netcat":           text = "Enables you to send an additional payload file from a computer (to port 9020). Can be selected multiple times when using \"Multiple payloads\"."; break;
         case "multiplepayloads": text = "Enables chaining of multiple payloads to run them all in one go. Select multiple payloads to chain them, then press \"Launch\"."; break;
         default:                 text = tag; // For custom and self-hosted payloads
     }
@@ -1357,12 +1395,43 @@ function toggleChainRecording() {
   resetPayloadChain();
 }
 
+// Checks if a website file exists
+function fileExists(pathname) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("HEAD", pathname, false);
+    xhr.send();
+    return xhr.status != 404;
+}
+
 // Launches one or multiple comma-separated payload files
 function launchPayloads(payloadString) {
     // Make sure the WebKit exploit is able to run
     if (sessionStorage.getItem("webkit_reset_required")) {
         alert("It seems you recently used Web Activator and the browser needs a fresh start.\nPlease close/open the browser by pressing the PS button and then X.");
         return;
+    }
+
+    // Make sure payload files exist
+    {
+        let payloadFilenames = payloadString.split(",");
+        for (let i = 0; i < payloadFilenames.length; i++) {
+            let payloadFilename = payloadFilenames[i];
+            if (!fileExists(payloadFilename)) {
+                // Check if file exists in (un)compressed form and use that instead
+                if (payloadFilename.endsWith(".bz2"))
+                    payloadFilename = payloadFilename.slice(0, payloadFilename.length - 4);
+                else
+                    payloadFilename = payloadFilename + ".bz2";
+                if (fileExists(payloadFilename)) {
+                    payloadFilenames[i] = payloadFilename;
+                    continue;
+                }
+
+                alert(`Payload file does not exist: "${filename}"`);
+                return;
+            }
+        }
+        payloadString = payloadFilenames.join(",");
     }
 
     // Avoid unwanted last-used page automatic jailbreaking (see "jb.html")
@@ -1391,7 +1460,7 @@ function launchPayloads(payloadString) {
                 for (let i = 0; i < payloads.length; i++) {
                     let payload = payloads[i];
 
-                   // Handle certain payloads differently
+                    // Handle certain payloads differently
                     switch (payload) {
                         case "dumper.bin":
                         case "history_blocker.bin":
