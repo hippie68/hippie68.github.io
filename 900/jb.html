@@ -294,7 +294,7 @@ if (payloadFilenames.includes("mira_loader.bin"))
 if (payloadFilenames.includes("ftp.bin")) {
     logMessage("The FTP server will be listening on port 1337.");
     if (payloadFilenames[payloadFilenames.length - 1] != "ftp.bin") {
-        logMessage("When done, please send the custom FTP command \"SHUTDOWN\".");
+        logMessage("When done, please send the custom FTP command \"SHUTDOWN\" to load the next payload.");
         logMessage("(E.g. for FileZilla: Server - Enter custom command...)");
     }
 }
