@@ -1,4 +1,6 @@
-let changes=`2023-03-06: Updated FTP payload (v1.08).
+let changes=`
+2023-03-19: Added Itemzflow launcher payload.
+2023-03-06: Updated FTP payload (v1.08).
 2023-03-03: Fixed JBC/Mira loader standalone payloads not loading.
 2023-02-20:
   - Added JBC loader payload.
@@ -107,6 +109,6 @@ let changes=`2023-03-06: Updated FTP payload (v1.08).
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-03-06";
+let date="2023-03-19";
 let build="1";
 let targetFirmware="9.00";

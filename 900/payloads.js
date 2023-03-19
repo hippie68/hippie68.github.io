@@ -21,6 +21,7 @@ addPayload("goldhen_v2.3.bin", "GoldHEN 2.3", "Enables homebrew. Ignores firmwar
 addPayload("gta5_expulsion_b4_v1.38.bin.bz2", "GTA 5 Expulsion Beta 4 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing L1 + Square. Only works with the stated game version.", "gta5");
 addPayload("gta5_lamance_1.00_v1.38.bin.bz2", "GTA 5 Lamance 1.00 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing D-pad right + Square. Only works with the stated game version.", "gta5");
 addPayload("history_blocker.bin", "History Blocker", "Normally, the PS4 browser automatically loads the last used page. This payload turns that feature off/on.");
+addPayload("itemzflow.bin", "Itemzflow", "Launches the homebrew app \"Itemzflow\" (if installed). Requires homebrew to be enabled by Mira or GoldHEN.");
 addPayload("jbc_loader.bin", "JBC Loader", "New payload loader by sleirsgoevy. Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\".");
 addPayload("linux_1gb.bin", "Linux (1 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 7 GB of RAM, as 1 GB will be used for graphics. Use this payload to install Linux.", "ps4_regular");
 addPayload("linux_2gb.bin", "Linux (2 GB)", "Loads Linux from a prepared USB storage device. Leaves Linux with 6 GB of RAM, as 2 GB will be used for graphics. Do not use this payload during Linux installation.", "ps4_regular");
