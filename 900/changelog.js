@@ -1,5 +1,4 @@
-let changes=`
-2023-03-19: Added Itemzflow launcher payload.
+let changes=`2023-03-19: Added Itemzflow launcher payload.
 2023-03-06: Updated FTP payload (v1.08).
 2023-03-03: Fixed JBC/Mira loader standalone payloads not loading.
 2023-02-20:
