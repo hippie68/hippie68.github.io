@@ -85,6 +85,9 @@ Compiled by SiSTRo (closed source):
 - goldhen_v1.1.bin (https://twitter.com/Joonie86/status/1380464406144819203)
 - goldhen_v2.x.bin (https://github.com/GoldHEN/GoldHEN/releases)
 
+Compiled by LightningMods (closed source):
+- itemzflow.bin (https://twitter.com/LightningMods_/status/1637194884028268545)
+
 Compiled by Karo (closed source):
 - GTA 5 mods (https://twitter.com/karo_sharifi/status/1343009143632834560)
 - hen_v2.1.3b.bin (https://twitter.com/karo_sharifi/status/1348775795976761354)
