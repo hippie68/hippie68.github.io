@@ -169,7 +169,7 @@ function runPayloads() {
 
         // Assemble payload buffer.
         debugMessage(`Writing "${payloadFilename}" to memory...`);
-        let payloadBuffer = chain.syscall(477, 0x0, array.buffer.byteLength, 0x7, 0x1000, 0xFFFFFFFF, 0x0);
+        let payloadBuffer = chain.syscall(477, 0x0, array.buffer.byteLength, 0x7, 0x1002, 0xFFFFFFFF, 0x0);
         let arrayBuffer = p.read8(p.leakval(array).add32(0x10));
         memcpy(payloadBuffer, arrayBuffer, array.buffer.byteLength);
         chain.syscall(203, payloadBuffer, array.buffer.byteLength, 0x0);
@@ -224,7 +224,7 @@ function runPayloads() {
             }
 
             // Create struct sockaddr_in.
-            let sockaddr_in = chain.syscall(477, 0x0, 0x10, 0x7, 0x1000, 0xFFFFFFFF, 0x0);
+            let sockaddr_in = chain.syscall(477, 0x0, 0x10, 0x7, 0x1002, 0xFFFFFFFF, 0x0);
             let sockaddr_in_data = p.array_from_address(sockaddr_in, 4);
             sockaddr_in_data[0] = 0x3d230210; // .sin_port: 9021, .sin_family: AF_INET, .sin_len: 16
             sockaddr_in_data[1] = 0x0100007f; // .sin_addr: 127.0.0.1

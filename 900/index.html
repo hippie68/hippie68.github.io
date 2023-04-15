@@ -1122,8 +1122,9 @@ function applyGoldHenVersion() {
         }
     } else {
         x.value = goldhen_version;
+        let regex = new RegExp("[^0-9.]" + goldhen_version + "([^0-9.]|$)", "g");
         for (let i = 0; i < a.length; i++) {
-            if (a[i].textContent.split(" ").pop() == goldhen_version) {
+            if (a[i].textContent.match(regex)) {
                 // Only show the selected version
                 a[i].style.display = "inline-block";
             } else {
