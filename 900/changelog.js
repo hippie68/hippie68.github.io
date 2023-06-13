@@ -1,4 +1,5 @@
-let changes=`2023-04-16: Updated JBC loader.
+let changes=`2023-06-13: Updated FTP payload (v1.08a - bug fix for WinSCP).
+2023-04-16: Updated JBC loader.
 2023-04-15: Added GoldHEN 2.4 BETA 13.
 2023-03-19: Added Itemzflow launcher payload.
 2023-03-06: Updated FTP payload (v1.08).
@@ -110,6 +111,6 @@ let changes=`2023-04-16: Updated JBC loader.
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-04-16";
+let date="2023-06-13";
 let build="1";
 let targetFirmware="9.00";
