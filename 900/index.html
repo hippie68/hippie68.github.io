@@ -347,24 +347,24 @@
             <b style="font-size: large">Instructions</b>
             <p>
                 This website is now cached in your PS4 browser. You can disconnect your PS4 from the Internet and, from now on, keep using the jailbreak offline. For quick access, feel free to add a bookmark.<br>
-                To jailbreak, first of all you need to prepare a USB device with the image file <a style="color: var(--text-color-2)" href="https://github.com/ChendoChap/pOOBs4">"exfathax.img"</a> (external link). After that, click on the payload that you want to load. If all goes well, after 20-40 seconds you will see the message <i>"You're all set!"</i>, followed by <i>"There is not enough free system memory"</i>. The jailbreak consists of two parts: WebKit exploit and kernel exploit.
+                To jailbreak, you need to prepare a USB storage device with the image file <a style="color: var(--text-color-2)" href="https://github.com/ChendoChap/pOOBs4">"exfathax.img"</a> (external link). Once that is done, have the device within reach and click on a payload. If all goes well, after 20-40 seconds you will see the message <i>"You're all set!"</i>, followed by <i>"There is not enough free system memory"</i>. The jailbreak consists of two parts: WebKit exploit and kernel exploit.
             </p>
             <b>Several messages can appear:</b>
             <ul>
-                <li><b>"There is not enough free system memory."</b>: It means the WebKit exploit was not successful. Press "OK" to try again.</li>
-                <li><b>"Insert USB device now."</b>: Connect the prepared USB device and follow the displayed instructions.</li>
-                <li><b>"Failed to trigger the kernel exploit."</b>: The system may have become unstable because the USB stick was not inserted correctly. It may be a good idea to reboot and try again.</li>
+                <li><b>"There is not enough free system memory."</b>: It means either the WebKit exploit was not successful or a payload could not be loaded. Press "OK" to try again.</li>
+                <li><b>"Insert exfathax USB device now."</b>: Connect the prepared USB device and closely follow the displayed instructions.</li>
+                <li><b>Black screen + "An error has occured in the system software."</b>: The system is probably unstable and should be rebooted.</li>
                 <li><b>"You're all set!"</b>: The jailbreak was successful, and the selected payload has been loaded into memory.</li>
             </ul>
             <b>Additional information:</b>
             <ul>
-                <li>Loading a GoldHEN or Mira payload unlocks installed homebrew applications and enables "Debug Settings": Leave the browser and go to "Settings - *Debug Settings - Game - Package Installer" to install homebrew PKG files from the root folder of an exFAT-formatted USB storage device. <b>Do not ever go into "*Debug Settings - System - IDU Mode", or your PS4 will brick!</b></li>
-                <li>Current GoldHEN payloads by default hide the Debug Settings and instead create a GoldHEN icon in the home screen's function area.</li>
+                <li>Loading a GoldHEN or Mira payload unlocks installed homebrew applications and enables "Debug Settings": Leave the browser and go to "Settings - *Debug Settings - Game - Package Installer" to install homebrew PKG files from the root folder of an exFAT-formatted USB storage device. <b>Do not ever go into "*Debug Settings - System - IDU Mode", or your PS4 will brick!</b><br>Current GoldHEN payloads by default hide the Debug Settings and instead create a GoldHEN icon in the home screen's function area.</li>
                 <li>For GoldHEN's Rest Mode support to work, make sure to enable "Keep Application Suspended" in "Settings - Power Save Settings - See Features Available in Rest Mode".</li>
                 <li>You can send additional payload files from a computer: First, load the "JBC Loader" or "Mira Loader" payload. Then, on your computer, use a Netcat program to send your payload files to the PS4.</li>
                 <li>Some payloads loaded via WebKit exploit continue to run inside the browser window. To leave or reopen the browser while keeping them alive, use the PS button.</li>
-                <li>GoldHEN 2.x's BinLoader server, found outside the browser in "Settings - *GoldHEN*", activates instant payload loading. This website feature only works if the website is self-hosted via HTTP. It will not be available when using HTTPS or hippie68.github.io. Please take care not to load the same payload twice while the payload is still running.</li>
-            <ul>
+                <li>If GoldHEN 2.x's BinLoader server is activated, most payloads are sent to the server. This website feature only works on hippie68.rf.gd or if the website is self-hosted via HTTP. It will not be available on hippie68.github.io or when using HTTPS. Please take care not to send the same payload twice while the payload is still running.</li>
+                <li>Unplug the exfathax USB device before rebooting. Otherwise, the exploit will be triggered too early.</li>
+            </ul>
         </div>
         <div class="tab" id="tab_changelog">
             <div class="tab_title">Changelog<span id="tab_changelog_version" style="font-size: medium; font-weight: normal"></span></div>
@@ -1396,43 +1396,12 @@ function toggleChainRecording() {
   resetPayloadChain();
 }
 
-// Checks if a website file exists
-function fileExists(pathname) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("HEAD", pathname, false);
-    xhr.send();
-    return xhr.status != 404;
-}
-
 // Launches one or multiple comma-separated payload files
 function launchPayloads(payloadString) {
     // Make sure the WebKit exploit is able to run
     if (sessionStorage.getItem("webkit_reset_required")) {
         alert("It seems you recently used Web Activator and the browser needs a fresh start.\nPlease close/open the browser by pressing the PS button and then X.");
         return;
-    }
-
-    // Make sure payload files exist
-    {
-        let payloadFilenames = payloadString.split(",");
-        for (let i = 0; i < payloadFilenames.length; i++) {
-            let payloadFilename = payloadFilenames[i];
-            if (!fileExists(payloadFilename)) {
-                // Check if file exists in (un)compressed form and use that instead
-                if (payloadFilename.endsWith(".bz2"))
-                    payloadFilename = payloadFilename.slice(0, payloadFilename.length - 4);
-                else
-                    payloadFilename = payloadFilename + ".bz2";
-                if (fileExists(payloadFilename)) {
-                    payloadFilenames[i] = payloadFilename;
-                    continue;
-                }
-
-                alert(`Payload file does not exist: "${filename}"`);
-                return;
-            }
-        }
-        payloadString = payloadFilenames.join(",");
     }
 
     // Avoid unwanted last-used page automatic jailbreaking (see "jb.html")

@@ -482,5 +482,6 @@ function poc() {
         }
     };
     window.p = prim;
+
     run_hax();
 }

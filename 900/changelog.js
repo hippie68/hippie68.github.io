@@ -1,4 +1,8 @@
-let changes=`2023-06-21: Updated GoldHEN (2.4 BETA 14).
+let changes=`2023-12-02:
+  - Fixed payload links not responding when the PS4 is offline.
+  - Reduced chance of system freeze when running the kernel exploit.
+  - Updated FTP payload (v1.08b - several bug fixes).
+2023-06-21: Updated GoldHEN (2.4 BETA 14).
 2023-06-13: Updated FTP payload (v1.08a - bug fix for WinSCP).
 2023-04-16: Updated JBC loader.
 2023-04-15: Added GoldHEN 2.4 BETA 13.
@@ -112,6 +116,6 @@ let changes=`2023-06-21: Updated GoldHEN (2.4 BETA 14).
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2023-06-21";
+let date="2023-12-02";
 let build="1";
 let targetFirmware="9.00";
