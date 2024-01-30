@@ -677,40 +677,6 @@ function checkForUpdates() {
 
 // Sets elements depending on existing localStorage data
 function initialize() {
-    // Settings tab, various elements
-    {
-        let index, val;
-
-        // Set payload loader dropdown menu
-        val = localStorage.getItem("payload_loader");
-        if (val === null)
-            document.getElementById("select_payload_loader").value = "no_loader"; // Default
-        else
-            document.getElementById("select_payload_loader").value = val;
-        applyPayloadLoaderWarning(val);
-
-        // Set payload style dropdown menu
-        index = localStorage.getItem("payload_style");
-        if (index === null)
-            document.getElementById("select_payload_style").selectedIndex = 0; // Default
-        else
-            document.getElementById("select_payload_style").selectedIndex = index;
-
-        // Set payload size dropdown menu
-        val = localStorage.getItem("payload_size");
-        if (val === null)
-            document.getElementById("select_payload_size").value = "medium"; // Default
-        else
-            document.getElementById("select_payload_size").value = val;
-
-        // Set color scheme dropdown menu
-        val = localStorage.getItem("color_scheme");
-        if (val === null)
-            document.getElementById("select_color_scheme").value = "gray"; // Default
-        else
-            document.getElementById("select_color_scheme").value = val;
-    }
-
     // Select saved offline wallpaper
     {
         let val = localStorage.getItem("wallpaper");
@@ -748,7 +714,40 @@ function initialize() {
     initializeCheckbox("disable_youreallset");
     initializeCheckbox("disable_binloader");
     initializeCheckbox("enable_debug");
-    initializeCheckbox("enable_test_loop");
+
+    // Settings tab, various elements
+    {
+        let index, val;
+
+        // Set payload loader dropdown menu
+        val = localStorage.getItem("payload_loader");
+        if (val === null)
+            document.getElementById("select_payload_loader").value = "no_loader"; // Default
+        else
+            document.getElementById("select_payload_loader").value = val;
+        applyPayloadLoaderWarning(val);
+
+        // Set payload style dropdown menu
+        index = localStorage.getItem("payload_style");
+        if (index === null)
+            document.getElementById("select_payload_style").selectedIndex = 0; // Default
+        else
+            document.getElementById("select_payload_style").selectedIndex = index;
+
+        // Set payload size dropdown menu
+        val = localStorage.getItem("payload_size");
+        if (val === null)
+            document.getElementById("select_payload_size").value = "medium"; // Default
+        else
+            document.getElementById("select_payload_size").value = val;
+
+        // Set color scheme dropdown menu
+        val = localStorage.getItem("color_scheme");
+        if (val === null)
+            document.getElementById("select_color_scheme").value = "gray"; // Default
+        else
+            document.getElementById("select_color_scheme").value = val;
+    }
 }
 
 /* OPTIONS/SETTINGS
