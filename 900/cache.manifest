@@ -1,5 +1,5 @@
 CACHE MANIFEST
-# random: 99032d3b142bf855f03f7bc5e1a0e2ad
+# random: 9f1406fa5175c898b0fce71d5137b268
 
 CACHE:
 app2usb.bin
@@ -15,7 +15,7 @@ fakeusb.bin
 ftp.bin
 goldhen_v2.1.2.bin
 goldhen_v2.3.bin
-goldhen_v2.4b15.bin
+goldhen_v2.4b16.bin
 gta5_expulsion_b4_v1.38.bin.bz2
 gta5_lamance_1.00_v1.38.bin.bz2
 history_blocker.bin
@@ -38,18 +38,18 @@ mira_loader.bin
 orbis_toolbox.bin.bz2
 payloads.js
 ps4debug.bin
-psfree/alert.mjs
-psfree/config.mjs
-psfree/exploit-900.mjs
-psfree/module/chain.mjs
-psfree/module/constants.mjs
-psfree/module/int64.mjs
-psfree/module/mem.mjs
-psfree/module/memtools.mjs
-psfree/module/offset.mjs
-psfree/module/rw.mjs
-psfree/module/utils.mjs
-psfree/rop/900.mjs
+psfree/alert.js
+psfree/config.js
+psfree/exploit-900.js
+psfree/module/chain.js
+psfree/module/constants.js
+psfree/module/int64.js
+psfree/module/mem.js
+psfree/module/memtools.js
+psfree/module/offset.js
+psfree/module/rw.js
+psfree/module/utils.js
+psfree/rop/900.js
 restore.bin
 rop.js
 todex.bin

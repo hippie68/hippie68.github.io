@@ -1,6 +1,6 @@
 let changes=`2024-01-30:
 - Implemented the "PSFree" WebKit exploit.
-- Updated GoldHEN (2.4 BETA 15).
+- Updated GoldHEN (2.4 BETA 16).
 - Fixed restoring default settings.
 2023-12-02:
   - Fixed payload links not responding when the PS4 is offline.
@@ -121,5 +121,5 @@ let changes=`2024-01-30:
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
 let date="2024-01-30";
-let build="2";
+let build="5";
 let targetFirmware="9.00";
