@@ -121,5 +121,5 @@ let changes=`2024-01-30:
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
 let date="2024-01-30";
-let build="1";
+let build="2";
 let targetFirmware="9.00";
