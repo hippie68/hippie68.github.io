@@ -68,14 +68,8 @@ Compiled by sleirsgoevy (open source):
 - mira.bin (https://github.com/sleirsgoevy/ps4jb, https://github.com/sleirsgoevy/ps4jb2)
 - web_activator.bin (https://github.com/sleirsgoevy/ps4-web-activator; converted from .js to .bin)
 
-Compiled by Joonie86 (open source):
-- ps4debug.bin for firmware 7.5x (https://github.com/Joonie86/ps4debug/releases)
-
-Compiled by Nazky (open source):
-- ps4debug.bin for firmware 7.02 (https://github.com/Nazky/PS4Debug/releases)
-
 Compiled by ctn123 (closed source):
-- ps4debug.bin for firmware 9.00 (https://github.com/ctn123/PS4_Cheater)
+- ps4debug.bin (https://github.com/GoldHEN/ps4debug)
 
 Compiled by OSM (open source):
 - orbis_toolbox.bin (https://github.com/OSM-Made/Orbis-Toolbox/releases)
