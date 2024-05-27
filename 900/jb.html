@@ -1,0 +1,327 @@
+<!--
+<style>
+    body {
+        height: 100%;
+        margin: 16px;
+        overflow: hidden;
+    }
+
+    #container {
+        border: 1px solid black;
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+        display: inline-block;
+        font-size: large;
+    }
+
+    #title {
+        font-weight: bold;
+        padding: 8px;
+    }
+
+    #log_area {
+        border: 1px solid black;
+        border-style: solid none none;
+        padding: 8px;
+    }
+</style>
+-->
+<head><title>Please wait...</title></head>
+<body>
+<!--
+<div id="container">
+    <div id="title"></div>
+    <div id="log_area"></div>
+</div>
+-->
+<script>
+// Don't start jailbreaking unless invoked manually.
+if (!sessionStorage.getItem("allow_jailbreak")) {
+    location.href = "index.html";
+    throw new Error();
+}
+
+// Set PSFree debug mode.
+var psfree_debug = sessionStorage.getItem("psfree_debug");
+if (psfree_debug)
+    document.title = "PSFree Debug Mode";
+
+let enable_debug = sessionStorage.getItem("enable_debug");
+let payloadFilenames = document.location.hash.substr(1).split(",");
+//let logArea = document.getElementById("log_area");
+
+//// Create info box.
+//{
+    //let title = document.getElementById("title");
+        //title.innerHTML = `Now jailbreaking with "${payloadFilenames.join(", ")}"`;
+
+    //// Applies a color scheme.
+    //function setColors(background1, background2, highlight, border, text1, text2 = text1) {
+        //container.style.borderColor = border;
+        //title.style.backgroundColor = background1;
+        //title.style.borderColor = border;
+        //title.style.color = text1;
+        //logArea.style.backgroundColor = background2;
+        //logArea.style.borderColor = border;
+        //logArea.style.color = text2;
+    //}
+
+    //// Load color scheme.
+    //let color_scheme = localStorage.getItem("color_scheme");
+    //switch (color_scheme) {
+        //case "cappuccino":
+            //setColors("#3A2E2E", "#D6B79F", "sienna", "#816C61", "#F7ECDF", "#4B3832");
+            //break;
+        //case "dark":
+            //setColors("#333333", "#666666", "#444444", "#AAAAAA", "#DDDDDD");
+            //break;
+        //case "lavender":
+            //setColors("lavender", "#F5F5FA", "thistle", "darkorchid", "indigo");
+            //break;
+        //case "midnightblue":
+            //setColors("midnightblue", "royalblue", "tomato", "#A9BBF1", "white");
+            //break;
+        //case "pink":
+            //setColors("#934A70", "#BC7B9C", "#763C59", "#D8B2C5", "#F5ECF1");
+            //break;
+        //case "rojigualda":
+            //setColors("#AA151B", "#F1BF00", "#800F14", "#D7810A", "#F1BF00", "#AA151B");
+            //break;
+        //case "usa":
+            //setColors("#9B1C2C", "#33335F", "#33335F", "#CCC8BF", "#E3DED4");
+            //break;
+        //case "wheat":
+            //setColors("wheat", "#FFFBF2", "burlywood", "saddlebrown", "maroon");
+            //break;
+        //case "wildberry":
+            //setColors("#550000", "#AA3939", "#801515", "#E6C7C7", "#FFDDDD");
+            //break;
+        //default: // "gray"
+            //setColors("#F0F0F0", "white", "#D7D7D7", "gray", "black");
+    //}
+//}
+
+//// Displays a message inside the info box.
+//function logMessage(message) {
+    //logArea.innerHTML += "[+] " + message + "<br>";
+//}
+
+// Displays a message at the top of the PS4 browser.
+function debugMessage(msg) {
+    if (enable_debug)
+        document.title = msg;
+}
+
+// Runs code from a single JavaScript file.
+function runScript(script) {
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", script, false);
+    xhr.send("");
+    try {
+        eval.call(window, xhr.responseText);
+    } catch (e) {
+        alert(e + "\n" + e.stack);
+    }
+}
+
+// Poor man's memcpy().
+function memcpy(destination, source, num) {
+    let remainder = num % 8;
+    for (let i = 0; i < num - remainder; i += 8)
+        p.write8(destination.add32(i), p.read8(source.add32(i)));
+    for (let i = num - remainder; i < num; i++)
+        p.write1(destination.add32(i), p.read1(source.add32(i)));
+}
+
+// Runs payloads, one by one.
+function runPayloads(kernel) {
+    // Writes a payload file into memory and returns address and size.
+    function createPayloadBuffer(payloadFilename) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", payloadFilename, false);
+        xhr.overrideMimeType("text/plain; charset=x-user-defined");
+        xhr.send();
+        if (xhr.status == 404)
+            throw(`File not found: "${payloadFilename}"`);
+        let array = Uint8Array.from(xhr.response, c => c.charCodeAt(0));
+        xhr = null;
+
+        // Decompress .bz2 files.
+        if (payloadFilename.endsWith(".bz2")) {
+            debugMessage(`Decompressing "${payloadFilename}"...`);
+            try {
+                array = bzip2.simple(bzip2.array(array));
+            } catch (error) {
+                alert(`${payloadFilename}: ${error}\nPlease report this critical bug at https://github.com/hippie68/hippie68.github.io/issues.`);
+                throw error;
+            }
+        }
+
+        // Convert .js to .bin.
+        if (payloadFilename.endsWith(".js") || payloadFilename.endsWith(".js.bz2")) {
+            debugMessage(`Converting "${payloadFilename}" to binary format...`);
+            let pos1 = array.indexOf("[".charCodeAt(0));
+            let pos2 = array.indexOf("]".charCodeAt(0));
+            let code = array.slice(pos1 + 1, pos2);
+            let decoder = new TextDecoder();
+            let str = decoder.decode(code);
+            let strarray = str.split(",");
+            array = strarray.map(Number);
+            array = Uint8Array.from(array);
+        }
+
+        // Assemble payload buffer.
+        debugMessage(`Writing "${payloadFilename}" to memory...`);
+        let payloadBuffer = chain.syscall(477, 0x0, array.buffer.byteLength, 0x7, 0x1000, 0xFFFFFFFF, 0x0);
+        let arrayBuffer = p.read8(p.leakval(array).add32(0x10));
+        memcpy(payloadBuffer, arrayBuffer, array.buffer.byteLength);
+        chain.syscall(203, payloadBuffer, array.buffer.byteLength, 0x0);
+
+        return {
+            address: payloadBuffer,
+            size: array.buffer.byteLength
+        };
+    }
+
+    try {
+        let payload_loader = localStorage.getItem("payload_loader");
+
+        for (let i = 0; i < payloadFilenames.length; i++) {
+            let payloadFilename = payloadFilenames[i];
+
+            let payloadLoaderFilename;
+            if (payloadFilename == "mira.bin") {
+                payloadLoaderFilename = "mira_loader.bin";
+            } else if (payloadFilename != "jbc_loader.bin" && payloadFilename != "mira_loader.bin") {
+                switch (payload_loader) {
+                    case null:
+                    case "no_loader":
+                        if (payloadFilename == "web_activator.bin")
+                            payloadLoaderFilename = "jbc_loader.bin";
+                        else if (payloadFilename.toLowerCase().includes("linux"))
+                            payloadLoaderFilename = "mira_loader.bin";
+                        break;
+                    case "jbc_loader":
+                        payloadLoaderFilename = "jbc_loader.bin";
+                        break;
+                    case "mira_loader":
+                        payloadLoaderFilename = "mira_loader.bin";
+                        break;
+                }
+            }
+
+            if (payloadLoaderFilename) {
+                // Load payload loader in the background.
+                let loaderBuffer = createPayloadBuffer(payloadLoaderFilename);
+                let pthread = p.malloc(0x10);
+                let ret = chain.call(libKernelBase.add32(OFFSET_lk_pthread_create), pthread, 0x0, loaderBuffer.address, 0x0).low;
+                if (ret) {
+                    alert(`Failed to load "${payloadLoaderFilename}" (for "${payloadFilename}").`);
+                    break;
+                }
+
+                // Create a socket file descriptor.
+                let sockfd = chain.syscall(97, 0x2, 0x1, 0x0).low;
+                if (sockfd < 0) {
+                    alert(`Failed to create socket: "${sockfd}"`);
+                    break;
+                }
+
+                // Create struct sockaddr_in.
+                let sockaddr_in = chain.syscall(477, 0x0, 0x10, 0x7, 0x1000, 0xFFFFFFFF, 0x0);
+                let sockaddr_in_data = p.array_from_address(sockaddr_in, 4);
+                sockaddr_in_data[0] = 0x3d230210; // .sin_port: 9021, .sin_family: AF_INET, .sin_len: 16
+                sockaddr_in_data[1] = 0x0100007f; // .sin_addr: 127.0.0.1
+                sockaddr_in_data[2] = 0x00000000;
+                sockaddr_in_data[3] = 0x00000000;
+
+                // Connect to socket.
+                ret = chain.syscall(98, sockfd, sockaddr_in, 0x10).low;
+                if (ret) {
+                    alert(`Could not connect to payload loader: ${ret}`);
+                    chain.syscall(6, sockfd);
+                    break;
+                }
+
+                // Send payload to payload loader.
+                let payloadBuffer = createPayloadBuffer(payloadFilename);
+                ret = chain.syscall(4, sockfd, payloadBuffer.address, payloadBuffer.size).low;
+                if (ret == payloadBuffer.size)
+                    debugMessage(`Running "${payloadFilename}"...`);
+                else if (ret <= 0)
+                    alert(`"${payloadFilename}" could not be sent.`);
+                else
+                    alert(`"${payloadFilename}": only ${ret} out of ${payloadBuffer.size} bytes could be sent.`);
+
+                // Clean up.
+                chain.fcall(window.syscalls[6], sockfd);
+                chain.fcall(window.syscalls[73], sockaddr_in, 0x10);
+                chain.fcall(window.syscalls[73], payloadBuffer.address, payloadBuffer.size);
+                chain.run();
+
+                // Wait for payload loader to return.
+                ret = chain.call(libKernelBase.add32(OFFSET_lk_pthread_join), p.read8(pthread), 0x0).low;
+                if (ret)
+                    alert(`Failed to wait for "${payloadLoaderFilename}" to return.
+                           Please report this bug at https://github.com/hippie68/hippie68.github.io/issues.
+                           Error value: ${ret}\n
+                           Wait for "${payloadFilename}" to finish and then press "OK".`);
+                chain.syscall(73, loaderBuffer.address, loaderBuffer.size);
+            } else {
+                let payloadBuffer = createPayloadBuffer(payloadFilename);
+                debugMessage(`Running "${payloadFilename}"...`);
+                chain.fcall(payloadBuffer.address, 0x0);
+                chain.fcall(window.syscalls[73], payloadBuffer.address, payloadBuffer.size);
+                chain.run();
+            }
+        }
+    } catch (error) {
+        alert(error);
+        //logMessage(error);
+        //logMessage("Jailbreak failed (press circle button to return)");
+    }
+
+    document.title = "Jailbreak successful!";
+    history.pushState({}, "", ".");
+    let kernelMessage = "Press the PS button to return to the home screen.\nIf you want to return to the website, reopen the browser.";
+    let all_set = localStorage.getItem("disable_youreallset");
+    if (all_set) {
+        if (kernel)
+            alert("You're all set!\n\n" + kernelMessage);
+        else
+            alert("You're all set!");
+    }
+    if (payloadFilenames.includes("web_activator.bin")) {
+        runScript("web_activator_rop.js");
+        runScript("web_activator_frontend.js");
+    } else {
+        if (kernel) {
+            if (!all_set)
+                alert(kernelMessage);
+        } else {
+            location.reload();
+        }
+    }
+}
+
+// Display additional info for certain payloads.
+//if (payloadFilenames.includes("jbc_loader.bin"))
+    //logMessage("JBC loader will be listening on port 9021.");
+//if (payloadFilenames.includes("mira_loader.bin"))
+    //logMessage("Mira loader will be listening on port 9021.");
+//if (payloadFilenames.includes("ftp.bin")) {
+    //logMessage("The FTP server will be listening on port 1337.");
+    //if (payloadFilenames[payloadFilenames.length - 1] != "ftp.bin") {
+        //logMessage("When done, please send the custom FTP command \"SHUTDOWN\" to load the next payload.");
+        //logMessage("(E.g. for FileZilla: Server - Enter custom command...)");
+    //}
+//}
+
+//logMessage("Please wait...");
+</script>
+<script src="bzip2.js"></script>
+<script src="int64.js"></script>
+<script src="rop.js"></script>
+<script src="kexploit.js"></script>
+<script type=module src="psfree/alert.js"></script>
+</body>
+</html>
