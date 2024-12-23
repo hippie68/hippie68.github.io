@@ -1,4 +1,5 @@
-let changes=`2024-10-28: Updated GoldHEN (2.4 BETA 18).
+let changes=`2024-12-23: Updated GoldHEN (2.4 BETA 18.2).
+2024-10-28: Updated GoldHEN (2.4 BETA 18).
 2024-06-13: Updated GoldHEN (2.4 BETA 17.3).
 2024-05-27: Updated PS4Debug (v1.1.16).
 2024-05-09: Updated GoldHEN (2.4 BETA 17).
@@ -127,6 +128,6 @@ let changes=`2024-10-28: Updated GoldHEN (2.4 BETA 18).
 2021-03-27: Added firmware safety checks.
 2021-03-26: Added ToDEX payload.`;
 let data=["aHR0cHM6Ly9jb3JzLmJyaWRnZWQuY2Mv","eC1jb3JzLWdyaWRhLWFwaS1rZXk=","NWJlZGE3MGUtMzlhYi00M2Q0LTkwOTAtMjIwZmM1MzNjNzUy"];
-let date="2024-10-28";
+let date="2024-12-23";
 let build="1";
 let targetFirmware="9.00";
