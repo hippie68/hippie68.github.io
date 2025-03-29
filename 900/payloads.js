@@ -18,7 +18,7 @@ addPayload("fakeusb.bin", "FakeUSB", "If your USB drive is too small to install 
 addPayload("ftp.bin", "FTP (port 1337)", "Starts an improved FTP server that listens on port 1337. On a computer, you can run an FTP client to access the PS4 file tree. Supports custom FTP commands DECRYPT, MTRW, MTPROC, and SHUTDOWN.");
 addPayload("goldhen_v2.1.2.bin", "GoldHEN 2.1.2", "Enables homebrew and Debug Settings. Ignores firmware checks to run the latest backports, supports remote package install and Rest Mode. A new PS4 menu entry, \"Settings - *GoldHEN*\", will appear.", "goldhen");
 addPayload("goldhen_v2.3.bin", "GoldHEN 2.3", "Enables homebrew. Ignores firmware checks to run the latest backports, supports remote package install and Rest Mode. A GoldHEN icon will appear in the home screen's function area.", "goldhen");
-addPayload("goldhen_v2.4b18.2.bin", "GoldHEN 2.4 BETA 18.2", "Latest changes: support for excluding folders during package scanning.", "goldhen");
+addPayload("goldhen_v2.4b18.3.bin", "GoldHEN 2.4 BETA 18.3", "Latest changes: auto-apply cheats on game start; support for 9.03; improved Klog server", "goldhen");
 addPayload("gta5_expulsion_b4_v1.38.bin.bz2", "GTA 5 Expulsion Beta 4 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing L1 + Square. Only works with the stated game version.", "gta5");
 addPayload("gta5_lamance_1.00_v1.38.bin.bz2", "GTA 5 Lamance 1.00 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing D-pad right + Square. Only works with the stated game version.", "gta5");
 addPayload("history_blocker.bin", "History Blocker", "Normally, the PS4 browser automatically loads the last used page. This payload turns that feature off/on.");
@@ -35,7 +35,7 @@ addPayload("linux_4gb_pro.bin", "Linux PS4 Pro (4 GB)", "Loads Linux from a prep
 addPayload("mira.bin", "Mira", "Enables homebrew and Debug Settings. Might not work with some of the latest backports.");
 addPayload("mira_loader.bin", "Mira Loader", "Enables you to send an additional payload file from a computer (to port 9021). Can be selected multiple times when using \"Multiple payloads\". Required to load Mira.");
 addPayload("orbis_toolbox.bin.bz2", "Orbis Toolbox", "Modifies the PS4 UI to help with launching and developing homebrew. A new PS4 menu entry, \"Settings - *Orbis Toolbox\", will appear. Note: now abandoned; may crash during Rest Mode.");
-addPayload("ps4debug.bin", "PS4Debug", "A debugger for the PS4. Required by some PC applications, e.g. Save Mounter and Offline Account Activator.");
+addPayload("ps4debug_v1.1.17.bin", "PS4Debug", "A debugger for the PS4. Required by some PC applications, e.g. Save Mounter and Offline Account Activator.");
 addPayload("restore.bin", "Restore", "Restores a backup done earlier by the Backup payload.");
 addPayload("todex.bin", "ToDEX", "Spoofs the Target ID to 0x82 (DEX) to identify as a PS4 TestKit. Useful if you want to use Debug Trophies. The spoof is not permanent.");
 addPayload("web_activator.bin", "Web Activator", "Provides a web page to offline-activate local PS4 user accounts. Warning: Only activate new accounts. Do not activate accounts that have savegames and trophies.");

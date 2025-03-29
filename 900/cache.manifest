@@ -15,7 +15,7 @@ fakeusb.bin
 ftp.bin
 goldhen_v2.1.2.bin
 goldhen_v2.3.bin
-goldhen_v2.4b18.2.bin
+goldhen_v2.4b18.3.bin
 gta5_expulsion_b4_v1.38.bin.bz2
 gta5_lamance_1.00_v1.38.bin.bz2
 history_blocker.bin
@@ -37,7 +37,7 @@ mira.bin
 mira_loader.bin
 orbis_toolbox.bin.bz2
 payloads.js
-ps4debug.bin
+ps4debug_v1.1.17.bin
 psfree/alert.js
 psfree/config.js
 psfree/exploit.js
