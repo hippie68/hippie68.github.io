@@ -1,4 +1,5 @@
-let changes=`2025-09-03: Updated GoldHEN (2.4 BETA 18.6).
+let changes=`2026-01-29: Updated GoldHEN (2.4 BETA 18.8).
+2025-09-03: Updated GoldHEN (2.4 BETA 18.6).
 2025-08-04:
   - Updated GoldHEN (2.4 BETA 18.5).
   - Updated PS4Debug (v1.1.19).

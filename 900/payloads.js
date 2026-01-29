@@ -18,7 +18,7 @@ addPayload("fakeusb.bin", "FakeUSB", "If your USB drive is too small to install 
 addPayload("ftp.bin", "FTP (port 1337)", "Starts an improved FTP server that listens on port 1337. On a computer, you can run an FTP client to access the PS4 file tree. Supports custom FTP commands DECRYPT, MTRW, MTPROC, and SHUTDOWN.");
 addPayload("goldhen_v2.1.2.bin", "GoldHEN 2.1.2", "Enables homebrew and Debug Settings. Ignores firmware checks to run the latest backports, supports remote package install and Rest Mode. A new PS4 menu entry, \"Settings - *GoldHEN*\", will appear.", "goldhen");
 addPayload("goldhen_v2.3.bin", "GoldHEN 2.3", "Enables homebrew. Ignores firmware checks to run the latest backports, supports remote package install and Rest Mode. A GoldHEN icon will appear in the home screen's function area.", "goldhen");
-addPayload("goldhen_v2.4b18.6.bin", "GoldHEN 2.4 BETA 18.6", "Latest changes: added Plugins Downloader.", "goldhen");
+addPayload("goldhen_v2.4b18.8.bin", "GoldHEN 2.4 BETA 18.8", "Latest changes: game patch menu and downloader; improved FTP speed; ELF support in PayLoader Server (ex-BinLoader); fixed Remote Play enabler for 12.2.", "goldhen");
 addPayload("gta5_expulsion_b4_v1.38.bin.bz2", "GTA 5 Expulsion Beta 4 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing L1 + Square. Only works with the stated game version.", "gta5");
 addPayload("gta5_lamance_1.00_v1.38.bin.bz2", "GTA 5 Lamance 1.00 (v1.38)", "Enables a mod menu in GTA 5, which you can activate in-game by pressing D-pad right + Square. Only works with the stated game version.", "gta5");
 addPayload("history_blocker.bin", "History Blocker", "Normally, the PS4 browser automatically loads the last used page. This payload turns that feature off/on.");
